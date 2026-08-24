@@ -1,0 +1,73 @@
+# Blueprint de Render — despliega los tres servicios de Moix Legal.
+# Uso: en https://dashboard.render.com/ → New → Blueprint → conectar
+# el repo rodsimonc/CC y aceptar. Render lee este archivo y crea los servicios.
+
+services:
+  # ── Backend REST ───────────────────────────────────────────────────────────
+  - type: web
+    name: moix-legal-api
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: api
+    buildCommand: npm install
+    startCommand: npm run seed && node src/server.js
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: file:./data/moix.db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_ISSUER
+        value: moix-legal-api
+      - key: JWT_AUDIENCE
+        value: moix-legal-web
+      - key: JWT_TTL_SECONDS
+        value: 3600
+      # Setear tras el primer deploy con la URL pública de moix-legal-chatbot.
+      - key: CHATBOT_URL
+        sync: false
+      # Setear tras el primer deploy con la URL pública de moix-legal-web.
+      - key: CORS_ORIGIN
+        sync: false
+
+  # ── Servicio RAG ───────────────────────────────────────────────────────────
+  - type: web
+    name: moix-legal-chatbot
+    runtime: python
+    plan: free
+    region: oregon
+    rootDir: chatbot
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.server:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: LLM_PROVIDER
+        value: google
+      # Cargar en el panel; en Fase 1 el bot responde con lógica dummy sin necesitarla.
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: LOG_LEVEL
+        value: INFO
+
+  # ── Frontend público ───────────────────────────────────────────────────────
+  - type: web
+    name: moix-legal-web
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: web
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Setear tras el primer deploy con la URL pública de moix-legal-api.
+      # Es build-time (NEXT_PUBLIC_*): tras cambiarla hay que reconstruir.
+      - key: NEXT_PUBLIC_API_URL
+        sync: false

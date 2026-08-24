@@ -2,6 +2,15 @@
 
 Sigue [SemVer](https://semver.org/lang/es/). Los cambios más recientes van arriba.
 
+## [0.1.1] - 2026-08-24
+
+### Agregado
+- Blueprint `render.yaml` en la raíz para desplegar los tres servicios (api, chatbot, web) con un click.
+- `docs/DEPLOY-RENDER.md` con guía paso a paso, cableado de URLs cruzadas y limitaciones del plan free.
+
+### Removido
+- `chatbot/render.yaml` redundante (reemplazado por el blueprint raíz, que es el que Render lee).
+
 ## [0.1.0] - 2026-08-24
 
 ### Agregado
