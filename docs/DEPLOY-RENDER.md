@@ -44,6 +44,11 @@ Los tres deberían responder 200. La landing pública queda en la URL de `moix-l
 - **Sin disco persistente:** el índice FAISS del chatbot (Fase 2) tampoco persiste; se reindexa en el arranque si `data/` está en el repo.
 - **Sin outbound estable:** la IP saliente cambia; los scrapers no corren acá — se despliegan aparte (VPS o Render Background Worker con plan pago).
 
+## Versiones pineadas
+
+- **api** y **web** corren en Node 20 LTS (pineado en `render.yaml` con `NODE_VERSION=20.18.0` y `.nvmrc` en cada servicio). Sin el pin, Render puede resolver una versión inestable (ej. 26.x) que rompe la compilación nativa de `better-sqlite3`.
+- **chatbot** corre en Python 3.11.9 (`PYTHON_VERSION` en el blueprint y `.python-version` en el servicio).
+
 ## Rollback
 
 Cada servicio en Render mantiene un historial de deploys. Desde su página → **Manual Deploy → Rollback** para volver a la versión anterior. Se rollbackea por servicio, no por blueprint.
