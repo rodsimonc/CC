@@ -26,13 +26,13 @@ services:
       - key: JWT_ISSUER
         value: moix-legal-api
       - key: JWT_AUDIENCE
-        value: moix-legal-web
+        value: moix-legal
       - key: JWT_TTL_SECONDS
         value: 3600
       # Setear tras el primer deploy con la URL pública de moix-legal-chatbot.
       - key: CHATBOT_URL
         sync: false
-      # Setear tras el primer deploy con la URL pública de moix-legal-web.
+      # Setear tras el primer deploy con la URL pública de moix-legal.
       - key: CORS_ORIGIN
         sync: false
 
@@ -60,7 +60,7 @@ services:
 
   # ── Frontend público ───────────────────────────────────────────────────────
   - type: web
-    name: moix-legal-web
+    name: moix-legal
     runtime: node
     plan: free
     region: oregon
