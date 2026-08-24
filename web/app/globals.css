@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #FAFAF7;
+  --fg: #0F2A44;
+}
+
+html.dark {
+  --bg: #0a1f34;
+  --fg: #f5f2ea;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container-narrow {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
