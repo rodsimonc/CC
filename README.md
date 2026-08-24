@@ -63,10 +63,18 @@ npm install
 npm run dev            # http://localhost:3000
 ```
 
+## Deploy rápido a Render
+
+En la raíz hay un `render.yaml` (blueprint). Desde https://dashboard.render.com/ →
+**New → Blueprint → conectar `rodsimonc/CC`** se crean los tres servicios
+(`moix-legal-api`, `moix-legal-chatbot`, `moix-legal-web`) en el plan free.
+Paso a paso y cableado de URLs cruzadas en `docs/DEPLOY-RENDER.md`.
+
 ## Documentación
 
 - `docs/ARCHITECTURE.md` — decisiones arquitectónicas.
 - `docs/DEPLOY.md` — despliegue por servicio.
+- `docs/DEPLOY-RENDER.md` — deploy en Render con el blueprint.
 - `docs/ERROR-CONTRACT.md` — contrato de errores (RFC 7807).
 - `docs/LEGAL-COMPLIANCE.md` — Ley 25.326 y reglas del CAMDP.
 - `docs/openapi.yaml` — contrato REST completo.
