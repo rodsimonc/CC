@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Lawyer } from "@/lib/api";
+import type { Lawyer } from "../lib/api";
 
 export function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
   return (

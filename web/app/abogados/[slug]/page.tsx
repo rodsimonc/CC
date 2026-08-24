@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { LawyerHero } from "@/components/LawyerHero";
-import { Timeline, type TimelineItem } from "@/components/Timeline";
-import { BookingCalendar } from "@/components/BookingCalendar";
-import { DEMO_LAWYERS, findDemoLawyer } from "@/lib/demo-lawyers";
+import { LawyerHero } from "../../../components/LawyerHero";
+import { Timeline, type TimelineItem } from "../../../components/Timeline";
+import { BookingCalendar } from "../../../components/BookingCalendar";
+import { DEMO_LAWYERS, findDemoLawyer } from "../../../lib/demo-lawyers";
 
 type Props = { params: { slug: string } };
 

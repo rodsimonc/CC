@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { ChatWidget } from "@/components/ChatWidget";
-import { LawyerCard } from "@/components/LawyerCard";
-import { DEMO_LAWYERS } from "@/lib/demo-lawyers";
+import { ChatWidget } from "../components/ChatWidget";
+import { LawyerCard } from "../components/LawyerCard";
+import { DEMO_LAWYERS } from "../lib/demo-lawyers";
 
 const AREAS = [
   { key: "penal", label: "Penal", desc: "Denuncias, defensa, medidas urgentes." },

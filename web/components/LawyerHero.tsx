@@ -1,4 +1,4 @@
-import type { Lawyer } from "@/lib/api";
+import type { Lawyer } from "../lib/api";
 
 export function LawyerHero({ lawyer }: { lawyer: Lawyer }) {
   const initials = lawyer.full_name.split(" ").filter(Boolean).slice(-2).map((s) => s[0]).join("");
