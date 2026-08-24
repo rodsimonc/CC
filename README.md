@@ -67,7 +67,7 @@ npm run dev            # http://localhost:3000
 
 En la raíz hay un `render.yaml` (blueprint). Desde https://dashboard.render.com/ →
 **New → Blueprint → conectar `rodsimonc/CC`** se crean los tres servicios
-(`moix-legal-api`, `moix-legal-chatbot`, `moix-legal-web`) en el plan free.
+(`moix-legal-api`, `moix-legal-chatbot`, `moix-legal`) en el plan free.
 Paso a paso y cableado de URLs cruzadas en `docs/DEPLOY-RENDER.md`.
 
 ## Documentación

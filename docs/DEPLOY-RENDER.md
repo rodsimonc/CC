@@ -9,7 +9,7 @@ Guía para levantar los tres servicios en https://dashboard.render.com/ a partir
 3. Render detecta `render.yaml` en la raíz y muestra los tres servicios:
    - `moix-legal-api` (Node · Express)
    - `moix-legal-chatbot` (Python · FastAPI)
-   - `moix-legal-web` (Node · Next.js)
+   - `moix-legal` (Node · Next.js)
 4. **Apply**. Render los crea en paralelo en la región **oregon** con plan free.
 
 ## 2. Cablear las URLs cruzadas (post primer deploy)
@@ -18,9 +18,9 @@ Cuando los tres servicios estén "live", cada uno tiene una URL `https://<name>.
 
 **moix-legal-api**
 - `CHATBOT_URL` = URL pública de `moix-legal-chatbot` (ej. `https://moix-legal-chatbot.onrender.com`)
-- `CORS_ORIGIN` = URL pública de `moix-legal-web` (ej. `https://moix-legal-web.onrender.com`)
+- `CORS_ORIGIN` = URL pública de `moix-legal` (ej. `https://moix-legal.onrender.com`)
 
-**moix-legal-web**
+**moix-legal**
 - `NEXT_PUBLIC_API_URL` = URL pública de `moix-legal-api` (ej. `https://moix-legal-api.onrender.com`)
   > Es una variable **build-time** de Next.js. Después de guardar, disparar **Manual Deploy → Clear build cache & deploy** para que el frontend embeba la URL correcta en el bundle.
 
@@ -32,10 +32,10 @@ Cuando los tres servicios estén "live", cada uno tiene una URL `https://<name>.
 ```bash
 curl https://moix-legal-api.onrender.com/healthz
 curl https://moix-legal-chatbot.onrender.com/health
-curl https://moix-legal-web.onrender.com/
+curl https://moix-legal.onrender.com/
 ```
 
-Los tres deberían responder 200. La landing pública queda en la URL de `moix-legal-web`.
+Los tres deberían responder 200. La landing pública queda en la URL de `moix-legal`.
 
 ## Limitaciones del plan free (relevantes para la prueba)
 
