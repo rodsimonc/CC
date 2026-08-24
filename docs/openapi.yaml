@@ -1,0 +1,262 @@
+openapi: 3.1.0
+info:
+  title: Moix Legal API
+  version: 0.1.0
+  description: |
+    API REST del directorio legal de Mar del Plata. Fase 1 (MVP).
+    Errores en formato Problem Details (RFC 7807).
+servers:
+  - url: http://localhost:4000
+    description: Desarrollo local
+  - url: https://api.moixlegal.com.ar
+    description: Producción
+tags:
+  - name: lawyers
+  - name: leads
+  - name: appointments
+  - name: auth
+  - name: chat
+paths:
+  /healthz:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /api/v1/lawyers:
+    get:
+      tags: [lawyers]
+      summary: Listar abogados publicados
+      parameters:
+        - name: area
+          in: query
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20, maximum: 100 }
+      responses:
+        '200':
+          description: Lista paginada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/Lawyer' }
+                  total: { type: integer }
+    post:
+      tags: [lawyers]
+      security: [{ bearerAuth: [] }]
+      summary: Crear abogado (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LawyerInput' }
+      responses:
+        '201':
+          description: Creado
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /api/v1/lawyers/{slug}:
+    get:
+      tags: [lawyers]
+      summary: Ver un abogado por slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Detalle
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Lawyer' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /api/v1/leads:
+    post:
+      tags: [leads]
+      summary: Crear lead desde el chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LeadInput' }
+      responses:
+        '201':
+          description: Lead creado
+        '400': { $ref: '#/components/responses/ValidationFailed' }
+  /api/v1/appointments:
+    post:
+      tags: [appointments]
+      summary: Reservar turno
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AppointmentInput' }
+      responses:
+        '201':
+          description: Turno reservado
+        '409':
+          description: Slot ya reservado
+  /api/v1/auth/login:
+    post:
+      tags: [auth]
+      summary: Login (abogado/admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, minLength: 12 }
+      responses:
+        '200':
+          description: Token emitido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token: { type: string }
+                  expires_at: { type: string, format: date-time }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/v1/chat:
+    post:
+      tags: [chat]
+      summary: Proxy al servicio chatbot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [session_id, question]
+              properties:
+                session_id: { type: string }
+                question: { type: string, minLength: 1, maxLength: 2000 }
+      responses:
+        '200':
+          description: Respuesta del chatbot
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  answer: { type: string }
+                  recommendations:
+                    type: array
+                    items: { $ref: '#/components/schemas/LawyerCard' }
+                  booking_cta:
+                    type: object
+                    properties:
+                      lawyer_slug: { type: string }
+                      href: { type: string }
+        '502': { $ref: '#/components/responses/UpstreamUnavailable' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Lawyer:
+      type: object
+      properties:
+        id: { type: string }
+        slug: { type: string }
+        full_name: { type: string }
+        bar_number: { type: string }
+        bar_status: { type: string, enum: [active, suspended, inactive] }
+        practice_areas:
+          type: array
+          items: { type: string }
+        bio: { type: string }
+        published: { type: boolean }
+        consented: { type: boolean }
+    LawyerInput:
+      type: object
+      required: [full_name, bar_number, practice_areas]
+      properties:
+        full_name: { type: string }
+        bar_number: { type: string }
+        practice_areas:
+          type: array
+          items: { type: string }
+        bio: { type: string }
+    LawyerCard:
+      type: object
+      properties:
+        slug: { type: string }
+        full_name: { type: string }
+        headline: { type: string }
+        reason: { type: string }
+    LeadInput:
+      type: object
+      required: [area, contact]
+      properties:
+        area: { type: string }
+        urgency: { type: string, enum: [low, medium, high, urgent] }
+        summary: { type: string }
+        contact:
+          type: object
+          properties:
+            name: { type: string }
+            phone: { type: string }
+            email: { type: string, format: email }
+        lawyer_slug: { type: string }
+        session_id: { type: string }
+    AppointmentInput:
+      type: object
+      required: [lawyer_slug, slot_at, contact]
+      properties:
+        lawyer_slug: { type: string }
+        slot_at: { type: string, format: date-time }
+        lead_id: { type: string }
+        contact:
+          type: object
+          properties:
+            name: { type: string }
+            phone: { type: string }
+            email: { type: string, format: email }
+    Problem:
+      type: object
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
+  responses:
+    Unauthorized:
+      description: Sin credenciales o token inválido
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Forbidden:
+      description: Sin permisos
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    NotFound:
+      description: No existe
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    ValidationFailed:
+      description: Payload inválido
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    UpstreamUnavailable:
+      description: Servicio upstream no disponible
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
