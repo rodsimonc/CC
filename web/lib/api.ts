@@ -18,6 +18,9 @@ export type ExternalLink = {
   image_url?: string | null;
 };
 
+export type PracticeItem = { title: string; detail?: string };
+export type EducationItem = { year?: string; title: string; institution?: string };
+
 export type Lawyer = {
   slug: string;
   full_name: string;
@@ -30,6 +33,8 @@ export type Lawyer = {
   city?: string;
   email?: string | null;
   phone?: string | null;
+  practice_details?: PracticeItem[];
+  education?: EducationItem[];
   mentions?: Mention[];
   links?: ExternalLink[];
 };
