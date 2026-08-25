@@ -5,6 +5,10 @@ import { LawyerHero } from "../../../components/LawyerHero";
 import { Timeline, type TimelineItem } from "../../../components/Timeline";
 import { BookingCalendar } from "../../../components/BookingCalendar";
 import { PreviewBadge, PreviewNote } from "../../../components/PreviewBadge";
+import {
+  LinkPreviewCard,
+  LinkPreviewSkeleton,
+} from "../../../components/LinkPreviewCard";
 import { DEMO_LAWYERS, findDemoLawyer } from "../../../lib/demo-lawyers";
 
 type Props = { params: { slug: string } };
@@ -44,11 +48,44 @@ const TIMELINES: Record<string, TimelineItem[]> = {
   ],
 };
 
+// Ejemplos ilustrativos para el placeholder cuando el abogado todavía no cargó
+// nada. Muestran cómo se verá el bloque una vez que agregue enlaces desde el panel.
+const MENTIONS_EXAMPLE = [
+  {
+    outlet: "La Capital MdP",
+    title: "Ejemplo · nota sobre un caso del fuero civil de Mar del Plata",
+    snippet:
+      "Cuando el abogado sume el link a la nota, acá aparece la vista previa con el título, la bajada y el logo del medio.",
+  },
+  {
+    outlet: "Infobrisas",
+    title: "Ejemplo · declaración sobre un fallo reciente",
+    snippet:
+      "El abogado pega el link de la nota y el sistema arma esta tarjeta con enlace directo al artículo original.",
+  },
+];
+
+const LINKS_EXAMPLE = [
+  {
+    outlet: "LinkedIn",
+    title: "Ejemplo · perfil profesional en LinkedIn",
+    snippet:
+      "El abogado puede sumar sus perfiles públicos (LinkedIn, Instagram, YouTube) y aparecen con la marca del sitio.",
+  },
+  {
+    outlet: "Blog propio",
+    title: "Ejemplo · artículo publicado en el blog del estudio",
+    snippet:
+      "También sirve para publicaciones propias, columnas en medios y links a sentencias comentadas.",
+  },
+];
+
 export default function LawyerPage({ params }: Props) {
   const lawyer = findDemoLawyer(params.slug);
   if (!lawyer) return notFound();
   const timeline = TIMELINES[lawyer.slug] ?? [];
   const mentions = lawyer.mentions ?? [];
+  const links = lawyer.links ?? [];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -93,57 +130,88 @@ export default function LawyerPage({ params }: Props) {
             </section>
           )}
 
-          {/* Menciones en medios — solo si hay data verificable */}
-          {mentions.length > 0 && (
-            <section className="mt-10">
+          {/* Menciones en medios */}
+          <section className="mt-10">
+            <div className="flex items-center gap-3 flex-wrap">
               <h2 className="font-serif text-2xl text-ink">Menciones en medios</h2>
-              <p className="mt-2 text-sm text-ink/60">
-                Notas de prensa donde el letrado interviene o es citado profesionalmente.
-                Enlace a la fuente en cada mención.
-              </p>
-              <ul className="mt-5 space-y-3">
-                {mentions.map((m, i) => (
-                  <li key={i} className="rounded-2xl border border-ink/10 bg-paper p-5">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <p className="text-xs uppercase tracking-widest text-ink/50">
-                        {m.outlet}
-                      </p>
-                      <span className="text-xs text-ink/50 tabular-nums">{m.year ?? ""}</span>
-                    </div>
-                    <h3 className="mt-2 font-serif text-lg text-ink leading-snug">
-                      {m.title}
-                    </h3>
-                    {m.snippet && (
-                      <p className="mt-2 text-sm text-ink/75 leading-relaxed">{m.snippet}</p>
-                    )}
-                    <a
-                      href={m.url}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      className="mt-3 inline-flex items-center gap-1 text-xs text-ink/60 underline underline-offset-2 hover:text-ink"
-                    >
-                      Leer nota original ↗
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
+              {mentions.length === 0 && <PreviewBadge label="Vista previa · Fase 3" />}
+            </div>
+            {mentions.length > 0 ? (
+              <>
+                <p className="mt-2 text-sm text-ink/60">
+                  Notas de prensa donde el letrado interviene o es citado
+                  profesionalmente. El abogado suma cada nota desde el panel y
+                  el sitio arma la previsualización automáticamente.
+                </p>
+                <ul className="mt-5 space-y-3">
+                  {mentions.map((m, i) => (
+                    <li key={i}>
+                      <LinkPreviewCard item={m} />
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <>
+                <PreviewNote>
+                  Cada abogado pega los links de las notas donde aparece y el
+                  sistema arma esta previsualización con logo del medio, título,
+                  bajada y enlace directo. Así se va a ver:
+                </PreviewNote>
+                <div className="mt-4 space-y-3">
+                  {MENTIONS_EXAMPLE.map((m, i) => (
+                    <LinkPreviewSkeleton
+                      key={i}
+                      outlet={m.outlet}
+                      title={m.title}
+                      snippet={m.snippet}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </section>
 
-          {/* Casos destacados — cada abogado los carga en Fase 3 (opcional) */}
-          {mentions.length === 0 && (
-            <section className="mt-10">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h2 className="font-serif text-2xl text-ink">Casos y experiencia</h2>
-                <PreviewBadge label="Vista previa · Fase 3" />
-              </div>
-              <PreviewNote>
-                Cada abogado va a poder cargar sus propios casos representativos
-                (anonimizados) y experiencia relevante desde el panel privado.
-                Publicación con consentimiento explícito.
-              </PreviewNote>
-            </section>
-          )}
+          {/* Enlaces destacados del propio abogado */}
+          <section className="mt-10">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="font-serif text-2xl text-ink">Enlaces destacados</h2>
+              {links.length === 0 && <PreviewBadge label="Vista previa · Fase 3" />}
+            </div>
+            {links.length > 0 ? (
+              <>
+                <p className="mt-2 text-sm text-ink/60">
+                  Perfiles públicos, publicaciones y enlaces propios que el
+                  abogado eligió destacar.
+                </p>
+                <ul className="mt-5 space-y-3">
+                  {links.map((l, i) => (
+                    <li key={i}>
+                      <LinkPreviewCard item={l} />
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <>
+                <PreviewNote>
+                  Espacio para que el abogado sume links propios: perfil de
+                  LinkedIn, Instagram del estudio, YouTube, blog, publicaciones
+                  externas, sentencias comentadas. Todo con previsualización.
+                </PreviewNote>
+                <div className="mt-4 space-y-3">
+                  {LINKS_EXAMPLE.map((l, i) => (
+                    <LinkPreviewSkeleton
+                      key={i}
+                      outlet={l.outlet}
+                      title={l.title}
+                      snippet={l.snippet}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </section>
         </div>
 
         <aside id="agendar" className="md:sticky md:top-8">

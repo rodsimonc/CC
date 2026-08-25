@@ -43,6 +43,14 @@ export const DEMO_LAWYERS: Lawyer[] = [
           "Defensa técnica en una causa de inversiones fraudulentas, con planteos sobre patrimonio del imputado.",
       },
     ],
+    links: [
+      {
+        title: "Estudio Moix Abogados en Instagram",
+        outlet: "Instagram",
+        url: "https://www.instagram.com/moixabogados/",
+        snippet: "Novedades del estudio, casos y actividad profesional en Mar del Plata.",
+      },
+    ],
   },
   {
     slug: "ana-benitez",
