@@ -6,6 +6,16 @@ export type Mention = {
   outlet: string;
   url: string;
   snippet?: string;
+  image_url?: string | null;
+};
+
+export type ExternalLink = {
+  title: string;
+  url: string;
+  outlet?: string;
+  snippet?: string;
+  year?: string;
+  image_url?: string | null;
 };
 
 export type Lawyer = {
@@ -21,6 +31,7 @@ export type Lawyer = {
   email?: string | null;
   phone?: string | null;
   mentions?: Mention[];
+  links?: ExternalLink[];
 };
 
 export type Recommendation = {
