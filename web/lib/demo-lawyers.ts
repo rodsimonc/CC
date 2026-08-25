@@ -8,12 +8,29 @@ export const DEMO_LAWYERS: Lawyer[] = [
     bar_number: "CAMDP · matrícula activa",
     bar_status: "active",
     practice_areas: ["penal"],
-    headline: "Abogado penalista. Titular del estudio Moix Abogados en Mar del Plata.",
-    bio: "Abogado penalista con ejercicio en Mar del Plata. Titular del estudio Moix Abogados. Defensor en causas de alto perfil del fuero penal marplatense —incluidas causas por asociación ilícita, delitos contra el orden constitucional y defensa de funcionarios policiales imputados—, con intervención habitual en la Cámara de Apelación en lo Penal local.",
+    headline: "Abogado penalista · Estudio propio en Mar del Plata",
+    bio: "Abogado dedicado al ejercicio de la defensa penal en el Departamento Judicial Mar del Plata. Titular y fundador del estudio Moix Abogados. Su práctica se centra en causas de complejidad ante los tribunales del fuero penal bonaerense, con actuación regular en instancias de apelación.",
     city: "Mar del Plata",
     photo_url: null,
     email: "contacto@moixabogados.com.ar",
     phone: null,
+    practice_details: [
+      {
+        title: "Defensa técnica en el fuero penal",
+        detail:
+          "Representación en todas las etapas del proceso: investigación penal preparatoria, juicio oral y recursos.",
+      },
+      {
+        title: "Recursos y garantías",
+        detail:
+          "Planteos ante la Cámara de Apelación y Garantías en lo Penal del Departamento Judicial Mar del Plata.",
+      },
+      {
+        title: "Asesoramiento previo",
+        detail:
+          "Análisis de situación procesal y estrategia de defensa desde el primer contacto con el sistema penal.",
+      },
+    ],
     mentions: [
       {
         year: "2024",
@@ -22,7 +39,7 @@ export const DEMO_LAWYERS: Lawyer[] = [
         outlet: "Infobrisas",
         url: "https://www.infobrisas.com/noticias/2024/05/09/68564-abogado-de-policias-detenidos-cuestiona-que-se-privilegie-declaraciones-de-presos-frente-a-carreras-intachables",
         snippet:
-          "Defensa de personal policial imputado en la causa de asociación ilícita mixta en Mar del Plata.",
+          "Actuación profesional como defensor técnico. Declaraciones sobre estándares probatorios en causas complejas.",
       },
       {
         year: "s/f",
@@ -31,7 +48,7 @@ export const DEMO_LAWYERS: Lawyer[] = [
         outlet: "La Capital MdP",
         url: "https://www.lacapitalmdp.com/temas/cristian-moix/",
         snippet:
-          "Intervención en la causa por hechos vinculados al FoNaPa, con acuerdos alternativos al debate.",
+          "Cobertura de una causa penal en la que intervino como defensor, con planteos sobre soluciones alternativas al debate.",
       },
       {
         year: "s/f",
@@ -40,7 +57,7 @@ export const DEMO_LAWYERS: Lawyer[] = [
         outlet: "La Capital MdP",
         url: "https://www.lacapitalmdp.com/temas/cristian-moix/",
         snippet:
-          "Defensa técnica en una causa de inversiones fraudulentas, con planteos sobre patrimonio del imputado.",
+          "Declaraciones profesionales publicadas en la prensa local en el marco de una causa comercial-penal.",
       },
     ],
     links: [
@@ -48,7 +65,7 @@ export const DEMO_LAWYERS: Lawyer[] = [
         title: "Estudio Moix Abogados en Instagram",
         outlet: "Instagram",
         url: "https://www.instagram.com/moixabogados/",
-        snippet: "Novedades del estudio, casos y actividad profesional en Mar del Plata.",
+        snippet: "Cuenta institucional del estudio.",
       },
     ],
   },

@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { LawyerHero } from "../../../components/LawyerHero";
-import { Timeline, type TimelineItem } from "../../../components/Timeline";
 import { BookingCalendar } from "../../../components/BookingCalendar";
 import { PreviewBadge, PreviewNote } from "../../../components/PreviewBadge";
 import {
@@ -26,42 +25,18 @@ export function generateMetadata({ params }: Props): Metadata {
   };
 }
 
-const TIMELINES: Record<string, TimelineItem[]> = {
-  "cristian-moix": [
-    { year: "Ejercicio", title: "Estudio Moix Abogados", detail: "Titular del estudio en Mar del Plata, con foco en derecho penal." },
-    { year: "2019", title: "Defensa en la causa FoNaPa", detail: "Representación de Carlos Pampillón, líder del Foro Nacional Patriótico." },
-    { year: "2024", title: "Defensa de personal policial imputado", detail: "Intervención en causas por asociación ilícita mixta con funcionarios policiales." },
-    { year: "Hoy", title: "Referente penalista de la red", detail: "Orienta a la red de abogados asociados a Moix Legal." },
-  ],
-  "ana-benitez": [
-    { year: "2012", title: "Ingreso a la matrícula del CAMDP" },
-    { year: "2016", title: "Mediadora inscripta", detail: "Formación en mediación y procesos colaborativos." },
-    { year: "Hoy", title: "Especializada en familia", detail: "Divorcios, alimentos, sucesiones." },
-  ],
-  "martin-losada": [
-    { year: "2010", title: "Ingreso a la matrícula del CAMDP" },
-    { year: "Hoy", title: "Representación de trabajadores", detail: "Despidos, ART, reclamos individuales." },
-  ],
-  "lucia-ferrari": [
-    { year: "2015", title: "Ingreso a la matrícula del CAMDP" },
-    { year: "Hoy", title: "Civil, comercial y consumidor", detail: "Contratos, daños, defensa del consumidor." },
-  ],
-};
-
-// Ejemplos ilustrativos para el placeholder cuando el abogado todavía no cargó
-// nada. Muestran cómo se verá el bloque una vez que agregue enlaces desde el panel.
 const MENTIONS_EXAMPLE = [
   {
     outlet: "La Capital MdP",
-    title: "Ejemplo · nota sobre un caso del fuero civil de Mar del Plata",
+    title: "Ejemplo · nota de prensa donde el abogado interviene profesionalmente",
     snippet:
-      "Cuando el abogado sume el link a la nota, acá aparece la vista previa con el título, la bajada y el logo del medio.",
+      "Cuando el abogado agrega el enlace desde su panel, aparece esta tarjeta con el logo del medio, el título y una bajada.",
   },
   {
     outlet: "Infobrisas",
-    title: "Ejemplo · declaración sobre un fallo reciente",
+    title: "Ejemplo · declaraciones profesionales publicadas en prensa local",
     snippet:
-      "El abogado pega el link de la nota y el sistema arma esta tarjeta con enlace directo al artículo original.",
+      "El sistema toma la previsualización del enlace pegado por el abogado.",
   },
 ];
 
@@ -70,20 +45,22 @@ const LINKS_EXAMPLE = [
     outlet: "LinkedIn",
     title: "Ejemplo · perfil profesional en LinkedIn",
     snippet:
-      "El abogado puede sumar sus perfiles públicos (LinkedIn, Instagram, YouTube) y aparecen con la marca del sitio.",
+      "Espacio para perfiles públicos y presencia institucional del abogado.",
   },
   {
-    outlet: "Blog propio",
-    title: "Ejemplo · artículo publicado en el blog del estudio",
+    outlet: "Publicación",
+    title: "Ejemplo · artículo doctrinario o columna en un medio jurídico",
     snippet:
-      "También sirve para publicaciones propias, columnas en medios y links a sentencias comentadas.",
+      "También sirve para publicaciones propias, sentencias comentadas o entrevistas.",
   },
 ];
 
 export default function LawyerPage({ params }: Props) {
   const lawyer = findDemoLawyer(params.slug);
   if (!lawyer) return notFound();
-  const timeline = TIMELINES[lawyer.slug] ?? [];
+
+  const practice = lawyer.practice_details ?? [];
+  const education = lawyer.education ?? [];
   const mentions = lawyer.mentions ?? [];
   const links = lawyer.links ?? [];
 
@@ -116,19 +93,65 @@ export default function LawyerPage({ params }: Props) {
         <div>
           {lawyer.bio && (
             <section>
-              <h2 className="font-serif text-2xl text-ink">Trayectoria y enfoque</h2>
-              <p className="mt-3 text-ink/75 leading-relaxed">{lawyer.bio}</p>
+              <h2 className="font-serif text-2xl text-ink">Perfil profesional</h2>
+              <p className="mt-3 text-ink/80 leading-relaxed text-[15px]">{lawyer.bio}</p>
             </section>
           )}
 
-          {timeline.length > 0 && (
-            <section className="mt-10">
-              <h2 className="font-serif text-2xl text-ink">Recorrido</h2>
-              <div className="mt-5">
-                <Timeline items={timeline} />
+          {/* Práctica profesional */}
+          <section className="mt-10">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="font-serif text-2xl text-ink">Práctica profesional</h2>
+              {practice.length === 0 && <PreviewBadge label="Vista previa · Fase 3" />}
+            </div>
+            {practice.length > 0 ? (
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                {practice.map((p, i) => (
+                  <div key={i} className="rounded-2xl border border-ink/10 bg-paper p-5">
+                    <h3 className="font-serif text-base text-ink">{p.title}</h3>
+                    {p.detail && (
+                      <p className="mt-2 text-sm text-ink/70 leading-relaxed">{p.detail}</p>
+                    )}
+                  </div>
+                ))}
               </div>
-            </section>
-          )}
+            ) : (
+              <PreviewNote>
+                Cada abogado detalla las áreas y tipo de trabajo que desarrolla,
+                desde el panel privado.
+              </PreviewNote>
+            )}
+          </section>
+
+          {/* Formación */}
+          <section className="mt-10">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="font-serif text-2xl text-ink">Formación</h2>
+              {education.length === 0 && <PreviewBadge label="Vista previa · Fase 3" />}
+            </div>
+            {education.length > 0 ? (
+              <ul className="mt-5 space-y-3">
+                {education.map((e, i) => (
+                  <li key={i} className="rounded-xl border border-ink/10 bg-paper p-4">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <p className="font-serif text-base text-ink">{e.title}</p>
+                      {e.year && (
+                        <span className="text-xs text-ink/50 tabular-nums">{e.year}</span>
+                      )}
+                    </div>
+                    {e.institution && (
+                      <p className="mt-1 text-sm text-ink/60">{e.institution}</p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <PreviewNote>
+                Título de grado, posgrados y cursos relevantes. Los carga el
+                propio abogado desde el panel privado.
+              </PreviewNote>
+            )}
+          </section>
 
           {/* Menciones en medios */}
           <section className="mt-10">
@@ -139,9 +162,8 @@ export default function LawyerPage({ params }: Props) {
             {mentions.length > 0 ? (
               <>
                 <p className="mt-2 text-sm text-ink/60">
-                  Notas de prensa donde el letrado interviene o es citado
-                  profesionalmente. El abogado suma cada nota desde el panel y
-                  el sitio arma la previsualización automáticamente.
+                  Notas de prensa donde el letrado interviene profesionalmente.
+                  Enlace directo a la fuente en cada tarjeta.
                 </p>
                 <ul className="mt-5 space-y-3">
                   {mentions.map((m, i) => (
@@ -154,18 +176,12 @@ export default function LawyerPage({ params }: Props) {
             ) : (
               <>
                 <PreviewNote>
-                  Cada abogado pega los links de las notas donde aparece y el
-                  sistema arma esta previsualización con logo del medio, título,
-                  bajada y enlace directo. Así se va a ver:
+                  El abogado pega el link a cada nota y el sitio arma esta
+                  previsualización con logo del medio, título y bajada.
                 </PreviewNote>
                 <div className="mt-4 space-y-3">
                   {MENTIONS_EXAMPLE.map((m, i) => (
-                    <LinkPreviewSkeleton
-                      key={i}
-                      outlet={m.outlet}
-                      title={m.title}
-                      snippet={m.snippet}
-                    />
+                    <LinkPreviewSkeleton key={i} outlet={m.outlet} title={m.title} snippet={m.snippet} />
                   ))}
                 </div>
               </>
@@ -181,8 +197,7 @@ export default function LawyerPage({ params }: Props) {
             {links.length > 0 ? (
               <>
                 <p className="mt-2 text-sm text-ink/60">
-                  Perfiles públicos, publicaciones y enlaces propios que el
-                  abogado eligió destacar.
+                  Perfiles institucionales y publicaciones seleccionadas por el letrado.
                 </p>
                 <ul className="mt-5 space-y-3">
                   {links.map((l, i) => (
@@ -195,18 +210,12 @@ export default function LawyerPage({ params }: Props) {
             ) : (
               <>
                 <PreviewNote>
-                  Espacio para que el abogado sume links propios: perfil de
-                  LinkedIn, Instagram del estudio, YouTube, blog, publicaciones
-                  externas, sentencias comentadas. Todo con previsualización.
+                  Espacio para perfiles públicos, publicaciones propias, columnas
+                  en medios y sentencias comentadas.
                 </PreviewNote>
                 <div className="mt-4 space-y-3">
                   {LINKS_EXAMPLE.map((l, i) => (
-                    <LinkPreviewSkeleton
-                      key={i}
-                      outlet={l.outlet}
-                      title={l.title}
-                      snippet={l.snippet}
-                    />
+                    <LinkPreviewSkeleton key={i} outlet={l.outlet} title={l.title} snippet={l.snippet} />
                   ))}
                 </div>
               </>
@@ -228,9 +237,24 @@ export default function LawyerPage({ params }: Props) {
             <p className="mt-3 text-[11px] text-ink/60 leading-relaxed">
               En Fase 2 el calendario se conecta al{" "}
               <strong>Cal.com</strong> propio del abogado, con sus horarios reales
-              y confirmación por email/WhatsApp.
+              y confirmación por email o WhatsApp.
             </p>
           </div>
+
+          {lawyer.email && (
+            <div className="mt-4 rounded-2xl border border-ink/10 bg-paper p-5">
+              <p className="text-xs uppercase tracking-widest text-ink/50">Contacto</p>
+              <a
+                href={`mailto:${lawyer.email}`}
+                className="mt-2 block text-sm text-ink hover:text-ink-soft underline underline-offset-2"
+              >
+                {lawyer.email}
+              </a>
+              {lawyer.city && (
+                <p className="mt-1 text-xs text-ink/60">{lawyer.city}, Argentina</p>
+              )}
+            </div>
+          )}
         </aside>
       </div>
 
