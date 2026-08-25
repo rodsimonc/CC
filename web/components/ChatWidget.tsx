@@ -124,12 +124,25 @@ export function ChatWidget() {
   return (
     <div className="flex flex-col h-[540px] w-full max-w-xl rounded-2xl border border-ink/10 bg-paper shadow-soft overflow-hidden">
       <header className="px-5 py-3 border-b border-ink/10 bg-white/60">
-        <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-emerald-500" />
-          <span className="text-sm font-medium text-ink">Asistente legal · en línea</span>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <span className="text-sm font-medium text-ink">Asistente legal · en línea</span>
+          </div>
+          <span className="inline-flex items-center gap-1 rounded-full border border-gold/60 bg-gold/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink/70">
+            <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+            Demo
+          </span>
         </div>
-        <p className="text-xs text-ink/60 mt-0.5">Español rioplatense · Mar del Plata</p>
+        <p className="text-xs text-ink/60 mt-0.5">
+          Español rioplatense · Mar del Plata · <span className="text-ink/50">respuestas de ejemplo</span>
+        </p>
       </header>
+      <div className="px-4 py-2 border-b border-ink/10 bg-gold/5 text-[11px] text-ink/70 leading-snug">
+        <strong className="text-ink">En Fase 2</strong> este chat usa IA real con RAG sobre el padrón del CAMDP,
+        estadísticas del MEV SCBA y normativa argentina indexada. Recomienda 1 a 3
+        abogados con razones fundadas y ofrece agenda contextual.
+      </div>
 
       <div ref={boxRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gradient-to-b from-paper to-paper-warm">
         <AnimatePresence initial={false}>

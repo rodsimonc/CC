@@ -157,6 +157,83 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ROADMAP — así va a crecer el sitio (para mostrar potencial al Dr. Moix) */}
+      <section id="roadmap" className="py-16 bg-paper-warm border-t border-ink/10">
+        <div className="container-narrow">
+          <div className="flex items-center gap-3 flex-wrap">
+            <p className="text-xs uppercase tracking-widest text-ink/50">Roadmap</p>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/60 bg-gold/10 px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wide text-ink/70">
+              <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+              Próximos pasos
+            </span>
+          </div>
+          <h2 className="mt-2 font-serif text-3xl text-ink">Cómo va a crecer el sitio</h2>
+          <p className="mt-2 text-ink/70 max-w-2xl">
+            Esta es una vista previa. Lo que ya ves funciona; lo que sigue se
+            construye en la próxima fase manteniendo la misma estética y flujo.
+          </p>
+
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
+            <div className="rounded-2xl border border-ink/10 bg-paper p-6">
+              <p className="text-xs uppercase tracking-widest text-gold">Fase 2 · IA real</p>
+              <h3 className="mt-2 font-serif text-xl text-ink">
+                Chatbot conectado a la normativa y al padrón oficial
+              </h3>
+              <ul className="mt-3 space-y-2 text-sm text-ink/75">
+                <li>· RAG sobre el padrón del <strong>CAMDP</strong> (matrículas verificadas).</li>
+                <li>· Estadística de expedientes desde la <strong>MEV SCBA</strong>.</li>
+                <li>· Normativa argentina indexada (Código Penal, CPP Buenos Aires, Ley 24.240, Ley 20.744).</li>
+                <li>· Respuestas empáticas en voseo, con disclaimer y CTA de agenda.</li>
+              </ul>
+            </div>
+
+            <div className="rounded-2xl border border-ink/10 bg-paper p-6">
+              <p className="text-xs uppercase tracking-widest text-gold">Fase 2 · Agenda real</p>
+              <h3 className="mt-2 font-serif text-xl text-ink">
+                Cal.com por abogado + notificaciones
+              </h3>
+              <ul className="mt-3 space-y-2 text-sm text-ink/75">
+                <li>· Cada abogado con su propio calendario embebido en el perfil.</li>
+                <li>· Confirmación automática por email (Resend) y WhatsApp (Twilio).</li>
+                <li>· Recordatorios 24 h y 1 h antes del turno.</li>
+              </ul>
+            </div>
+
+            <div className="rounded-2xl border border-ink/10 bg-paper p-6">
+              <p className="text-xs uppercase tracking-widest text-gold">Fase 2 · Perfiles enriquecidos</p>
+              <h3 className="mt-2 font-serif text-xl text-ink">
+                Cada abogado con desempeño judicial verificado
+              </h3>
+              <ul className="mt-3 space-y-2 text-sm text-ink/75">
+                <li>· Bloque "Desempeño en tribunales de MdP" (fueros, causas, juzgados).</li>
+                <li>· Publicaciones indexadas de SAIJ y Google Scholar.</li>
+                <li>· Casos destacados cargados por el propio abogado (anonimizados).</li>
+                <li>· Consentimiento explícito antes de publicar (Ley 25.326).</li>
+              </ul>
+            </div>
+
+            <div className="rounded-2xl border border-ink/10 bg-paper p-6">
+              <p className="text-xs uppercase tracking-widest text-gold">Fase 3 · Panel y métricas</p>
+              <h3 className="mt-2 font-serif text-xl text-ink">
+                Panel privado para abogados y para el Dr. Moix
+              </h3>
+              <ul className="mt-3 space-y-2 text-sm text-ink/75">
+                <li>· Cada abogado ve sus leads, turnos y perfil editable.</li>
+                <li>· Dr. Moix ve la red completa: derivaciones, conversión, actividad.</li>
+                <li>· Tracking "referido por Moix" en cada lead para transparencia.</li>
+                <li>· Reportes mensuales por email.</li>
+              </ul>
+            </div>
+          </div>
+
+          <p className="mt-8 text-xs text-ink/50">
+            Todos los desarrollos siguen la Ley 25.326 (Protección de Datos
+            Personales) y las reglas del Colegio de Abogados de MdP sobre publicidad
+            profesional.
+          </p>
+        </div>
+      </section>
+
       {/* FOOTER */}
       <footer className="border-t border-ink/10 py-10 bg-paper-warm">
         <div className="container-narrow text-sm text-ink/60 grid gap-4 md:grid-cols-3">
@@ -170,7 +247,8 @@ export default function HomePage() {
             <ul className="mt-2 space-y-1">
               <li><Link href="#abogados">Abogados</Link></li>
               <li><Link href="#moix">Dr. Moix</Link></li>
-              <li><Link href="/legal/privacidad">Privacidad</Link></li>
+              <li><Link href="#roadmap">Roadmap</Link></li>
+              <li><Link href="/admin">Panel (preview)</Link></li>
             </ul>
           </div>
           <div>
