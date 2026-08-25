@@ -17,5 +17,11 @@ class Settings(BaseSettings):
     port: int = 8000
     log_level: str = "INFO"
 
+    gemini_model: str = "gemini-1.5-flash"
+
+    @property
+    def has_llm(self) -> bool:
+        return self.llm_provider == "google" and bool(self.google_api_key)
+
 
 settings = Settings()

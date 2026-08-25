@@ -177,22 +177,43 @@ export function ChatWidget() {
     setSuggestionsUsed(true);
     setMessages((m) => [...m, { role: "user", content: clean }]);
     setPending(true);
-    await new Promise((r) => setTimeout(r, 550));
 
-    const area = detectArea(clean);
-    if (area) {
-      setMessages((m) => [...m, ANSWERS[area]]);
-    } else {
+    // 1) intento con el backend real (Gemini si la key está seteada, si no
+    //    la heurística del propio chatbot). 2) si falla el fetch, uso mock local.
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ session_id: "web-demo", question: clean }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
       setMessages((m) => [
         ...m,
         {
           role: "assistant",
-          content:
-            `Contame un poco más para poder orientarte. Por ejemplo: ¿es algo que pasó en el trabajo, en tu familia, con un vecino o comercio, un tema de tránsito, o una situación con la policía o la justicia penal? Cuanto más detalle, mejor. ${DISCLAIMER}`,
+          content: data.answer,
+          recommendations: Array.isArray(data.recommendations) ? data.recommendations : undefined,
+          booking_cta: data.booking_cta ?? undefined,
         },
       ]);
+    } catch (_err) {
+      const area = detectArea(clean);
+      if (area) {
+        setMessages((m) => [...m, ANSWERS[area]]);
+      } else {
+        setMessages((m) => [
+          ...m,
+          {
+            role: "assistant",
+            content:
+              `Contame un poco más para poder orientarte. Por ejemplo: ¿es algo que pasó en el trabajo, en tu familia, con un vecino o comercio, un tema de tránsito, o una situación con la policía o la justicia penal? Cuanto más detalle, mejor. ${DISCLAIMER}`,
+          },
+        ]);
+      }
+    } finally {
+      setPending(false);
     }
-    setPending(false);
   }
 
   function onSubmit(e: React.FormEvent) {
