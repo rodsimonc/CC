@@ -24,10 +24,10 @@ export function generateMetadata({ params }: Props): Metadata {
 
 const TIMELINES: Record<string, TimelineItem[]> = {
   "cristian-moix": [
-    { year: "1998", title: "Ingreso a la matrícula del CAMDP", detail: "Inicio del ejercicio profesional en Mar del Plata." },
-    { year: "2005", title: "Titular de cátedra", detail: "Docente titular de Derecho Penal en universidad local." },
-    { year: "2015", title: "Rectorado universitario", detail: "Ejerció como rector durante un mandato." },
-    { year: "Hoy", title: "Referente de la red", detail: "Cura y orienta la red Moix Legal." },
+    { year: "Ejercicio", title: "Estudio Moix Abogados", detail: "Titular del estudio en Mar del Plata, con foco en derecho penal." },
+    { year: "2019", title: "Defensa en la causa Fonapa", detail: "Representación de Carlos Pampillón, líder del Foro Nacional Patriótico." },
+    { year: "2024", title: "Defensa de personal policial imputado", detail: "Intervención en causas por asociación ilícita mixta con funcionarios policiales." },
+    { year: "Hoy", title: "Referente penalista de la red", detail: "Orienta a la red de abogados asociados a Moix Legal." },
   ],
   "ana-benitez": [
     { year: "2012", title: "Ingreso a la matrícula del CAMDP" },
@@ -44,7 +44,7 @@ const TIMELINES: Record<string, TimelineItem[]> = {
   ],
 };
 
-type MockCase = { year: string; title: string; summary: string };
+type MockCase = { year: string; title: string; summary: string; source?: { label: string; href: string } };
 type MockPub = { year: string; title: string; venue: string };
 type MockStats = {
   total_cases: number;
@@ -56,16 +56,34 @@ type MockStats = {
 const CASES_BY_SLUG: Record<string, MockCase[]> = {
   "cristian-moix": [
     {
-      year: "2021",
-      title: "Defensa en causa por delitos económicos",
+      year: "2024",
+      title: "Defensa de funcionarios policiales en causa por asociación ilícita",
       summary:
-        "Representación de un directivo imputado en causa compleja del fuero penal económico. Se logró sobreseimiento parcial y acuerdo abreviado.",
+        "Intervención como defensor de un oficial imputado en la causa de asociación ilícita mixta que involucra a policías y particulares en Mar del Plata. El planteo cuestiona el valor probatorio de declaraciones de coimputados frente a las carreras profesionales de los defendidos.",
+      source: {
+        label: "Infobrisas · MdP",
+        href: "https://www.infobrisas.com/noticias/2024/05/09/68564-abogado-de-policias-detenidos-cuestiona-que-se-privilegie-declaraciones-de-presos-frente-a-carreras-intachables",
+      },
     },
     {
       year: "2019",
-      title: "Recurso extraordinario federal — libertad de prensa",
+      title: "Defensa de Carlos Pampillón (Foro Nacional Patriótico)",
       summary:
-        "Patrocinio en un caso mediático con planteo constitucional. Sentencia favorable en Cámara y confirmación posterior.",
+        "Representación del líder del FoNaPa en la causa por hechos vinculados a violencia política en Mar del Plata. Actuación técnica ante el tribunal de juicio, con planteos sobre acuerdos alternativos al debate.",
+      source: {
+        label: "La Capital MdP",
+        href: "https://www.lacapitalmdp.com/temas/cristian-moix/",
+      },
+    },
+    {
+      year: "s/f",
+      title: "Defensa en caso Viglione — reclamos por inversiones",
+      summary:
+        "Patrocinio de un imputado en una causa por inversiones fraudulentas con múltiples denunciantes, con declaraciones públicas sobre disposición a responder patrimonialmente.",
+      source: {
+        label: "La Capital MdP",
+        href: "https://www.lacapitalmdp.com/temas/cristian-moix/",
+      },
     },
   ],
   "ana-benitez": [
@@ -113,10 +131,7 @@ const CASES_BY_SLUG: Record<string, MockCase[]> = {
 };
 
 const PUBS_BY_SLUG: Record<string, MockPub[]> = {
-  "cristian-moix": [
-    { year: "2020", title: "El proceso penal bonaerense: garantías y práctica", venue: "Revista de Derecho Penal · SAIJ" },
-    { year: "2016", title: "Notas sobre la reforma del CPP de Buenos Aires", venue: "Anuario de la Facultad de Derecho, UNMDP" },
-  ],
+  "cristian-moix": [],
   "ana-benitez": [
     { year: "2022", title: "Mediación familiar: buenas prácticas en el fuero de MdP", venue: "Colegio de Abogados de Mar del Plata" },
   ],
@@ -273,23 +288,40 @@ export default function LawyerPage({ params }: Props) {
             </section>
           )}
 
-          {/* Casos destacados (mock ilustrativo) */}
+          {/* Casos destacados */}
           {cases.length > 0 && (
             <section className="mt-10">
               <div className="flex items-center gap-3 flex-wrap">
                 <h2 className="font-serif text-2xl text-ink">Casos destacados</h2>
-                <PreviewBadge />
+                {!cases.every((c) => c.source) && <PreviewBadge />}
               </div>
-              <PreviewNote>
-                Cada abogado va a cargar sus propios casos (anonimizados) desde el
-                panel privado. Estos ejemplos son ilustrativos.
-              </PreviewNote>
+              {cases.every((c) => c.source) ? (
+                <p className="mt-2 text-sm text-ink/60">
+                  Selección de intervenciones profesionales con cobertura pública.
+                  Enlace a la fuente en cada caso.
+                </p>
+              ) : (
+                <PreviewNote>
+                  Cada abogado va a cargar sus propios casos (anonimizados) desde el
+                  panel privado. Estos ejemplos son ilustrativos.
+                </PreviewNote>
+              )}
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 {cases.map((c, i) => (
                   <article key={i} className="rounded-2xl border border-ink/10 bg-paper p-5">
                     <p className="text-xs uppercase tracking-widest text-ink/50">{c.year}</p>
                     <h3 className="mt-1 font-serif text-lg text-ink">{c.title}</h3>
                     <p className="mt-2 text-sm text-ink/75 leading-relaxed">{c.summary}</p>
+                    {c.source && (
+                      <a
+                        href={c.source.href}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="mt-3 inline-flex items-center gap-1 text-xs text-ink/60 underline underline-offset-2 hover:text-ink"
+                      >
+                        Fuente: {c.source.label} ↗
+                      </a>
+                    )}
                   </article>
                 ))}
               </div>
