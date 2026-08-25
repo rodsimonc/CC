@@ -4,7 +4,8 @@ pydantic==2.9.2
 pydantic-settings==2.5.2
 httpx==0.27.2
 python-dotenv==1.0.1
-# Fase 2 (RAG real). Se dejan comentados para no inflar la imagen del MVP.
+google-generativeai==0.8.3
+# Fase 2 avanzada (RAG con FAISS). Se dejan comentados para no inflar la imagen del MVP.
 # langchain==0.3.1
 # langchain-community==0.3.1
 # langchain-google-genai==2.0.0

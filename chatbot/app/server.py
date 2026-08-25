@@ -33,11 +33,18 @@ class ChatResponse(BaseModel):
     booking_cta: dict | None = None
     area: str | None = None
     urgency: str = "medium"
+    engine: str = "fallback"
 
 
 @app.get("/health")
 def health() -> dict:
-    return {"ok": True, "service": "chatbot", "version": "0.1.0", "provider": settings.llm_provider}
+    return {
+        "ok": True,
+        "service": "chatbot",
+        "version": "0.1.0",
+        "provider": settings.llm_provider,
+        "llm_ready": settings.has_llm,
+    }
 
 
 @app.post("/api/chat", response_model=ChatResponse)
@@ -50,6 +57,7 @@ def chat(req: ChatRequest) -> ChatResponse:
         booking_cta=result.booking_cta,
         area=result.area,
         urgency=result.urgency,
+        engine=result.engine,
     )
 
 
