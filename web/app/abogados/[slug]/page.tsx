@@ -91,21 +91,6 @@ export default function LawyerPage({ params }: Props) {
             </section>
           )}
 
-          <section className="mt-10">
-            <h2 className="font-serif text-2xl text-ink">Casos destacados</h2>
-            <p className="mt-2 text-sm text-ink/50">Ejemplos anonimizados a los efectos ilustrativos.</p>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              {[1, 2].map((i) => (
-                <div key={i} className="rounded-xl border border-ink/10 bg-paper p-5">
-                  <p className="text-xs uppercase tracking-widest text-ink/50">Caso {i}</p>
-                  <p className="mt-2 text-sm text-ink/75">
-                    Intervención en un caso complejo del fuero, con resolución favorable para la parte
-                    representada. Detalles reservados por deber de confidencialidad profesional.
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
         </div>
 
         <aside id="agendar" className="md:sticky md:top-8">
