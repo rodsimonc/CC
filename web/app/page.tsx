@@ -157,79 +157,144 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ROADMAP — así va a crecer el sitio (para mostrar potencial al Dr. Moix) */}
+      {/* ROADMAP — el proyecto en 3 fases + el producto final */}
       <section id="roadmap" className="py-16 bg-paper-warm border-t border-ink/10">
         <div className="container-narrow">
           <div className="flex items-center gap-3 flex-wrap">
             <p className="text-xs uppercase tracking-widest text-ink/50">Roadmap</p>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/60 bg-gold/10 px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wide text-ink/70">
               <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-              Próximos pasos
+              3 fases
             </span>
           </div>
-          <h2 className="mt-2 font-serif text-3xl text-ink">Cómo va a crecer el sitio</h2>
+          <h2 className="mt-2 font-serif text-3xl text-ink">El proyecto en tres fases</h2>
           <p className="mt-2 text-ink/70 max-w-2xl">
-            Esta es una vista previa. Lo que ya ves funciona; lo que sigue se
-            construye en la próxima fase manteniendo la misma estética y flujo.
+            Un plan por etapas para que puedas ver resultados desde el primer día
+            y decidir con evidencia cada avance. La estética, el flujo y los
+            criterios de cumplimiento se mantienen en toda la evolución.
           </p>
 
-          <div className="mt-8 grid gap-5 md:grid-cols-2">
-            <div className="rounded-2xl border border-ink/10 bg-paper p-6">
-              <p className="text-xs uppercase tracking-widest text-gold">Fase 2 · IA real</p>
-              <h3 className="mt-2 font-serif text-xl text-ink">
-                Chatbot conectado a la normativa y al padrón oficial
-              </h3>
+          <div className="mt-8 grid gap-5 md:grid-cols-3">
+            <div className="rounded-2xl border border-emerald-500/40 bg-paper p-6 relative">
+              <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-emerald-800">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> En vivo
+              </span>
+              <p className="text-xs uppercase tracking-widest text-emerald-700">Fase 1 · MVP visual</p>
+              <h3 className="mt-2 font-serif text-xl text-ink">Lo que ya ves funcionando</h3>
               <ul className="mt-3 space-y-2 text-sm text-ink/75">
-                <li>· RAG sobre el padrón del <strong>CAMDP</strong> (matrículas verificadas).</li>
-                <li>· Estadística de expedientes desde la <strong>MEV SCBA</strong>.</li>
-                <li>· Normativa argentina indexada (Código Penal, CPP Buenos Aires, Ley 24.240, Ley 20.744).</li>
-                <li>· Respuestas empáticas en voseo, con disclaimer y CTA de agenda.</li>
+                <li>· Landing profesional con chatbot embebido.</li>
+                <li>· Red de abogados con perfil individual navegable.</li>
+                <li>· Chat con clasificación de área y recomendación demo.</li>
+                <li>· Calendario de agenda (mockup) por profesional.</li>
+                <li>· Panel de administración (vista previa).</li>
+                <li>· Backend REST + servicio de IA listos para conectar datos reales.</li>
               </ul>
             </div>
 
-            <div className="rounded-2xl border border-ink/10 bg-paper p-6">
-              <p className="text-xs uppercase tracking-widest text-gold">Fase 2 · Agenda real</p>
-              <h3 className="mt-2 font-serif text-xl text-ink">
-                Cal.com por abogado + notificaciones
-              </h3>
+            <div className="rounded-2xl border border-gold/50 bg-paper p-6 relative">
+              <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full border border-gold/60 bg-gold/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink/70">
+                <span className="h-1.5 w-1.5 rounded-full bg-gold" /> ~3 semanas
+              </span>
+              <p className="text-xs uppercase tracking-widest text-gold">Fase 2 · Producto real</p>
+              <h3 className="mt-2 font-serif text-xl text-ink">Lo que se conecta a la realidad</h3>
               <ul className="mt-3 space-y-2 text-sm text-ink/75">
-                <li>· Cada abogado con su propio calendario embebido en el perfil.</li>
-                <li>· Confirmación automática por email (Resend) y WhatsApp (Twilio).</li>
-                <li>· Recordatorios 24 h y 1 h antes del turno.</li>
+                <li>· <strong>Chatbot con IA real</strong> (Gemini/Claude) sobre el padrón del CAMDP y la normativa argentina.</li>
+                <li>· <strong>Agenda con Cal.com</strong> por abogado, con confirmación por email (Resend) y WhatsApp (Twilio).</li>
+                <li>· <strong>Perfiles enriquecidos</strong>: estadísticas del MEV SCBA, publicaciones de SAIJ y Google Scholar.</li>
+                <li>· <strong>Base de datos en producción</strong> (Postgres), leads persistidos, autenticación completa.</li>
+                <li>· Alta guiada de abogado con consentimiento (Ley 25.326).</li>
               </ul>
             </div>
 
-            <div className="rounded-2xl border border-ink/10 bg-paper p-6">
-              <p className="text-xs uppercase tracking-widest text-gold">Fase 2 · Perfiles enriquecidos</p>
-              <h3 className="mt-2 font-serif text-xl text-ink">
-                Cada abogado con desempeño judicial verificado
-              </h3>
+            <div className="rounded-2xl border border-ink/15 bg-paper p-6 relative">
+              <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full border border-ink/20 bg-ink/5 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink/60">
+                ~4 semanas
+              </span>
+              <p className="text-xs uppercase tracking-widest text-ink/60">Fase 3 · Escala y gobierno</p>
+              <h3 className="mt-2 font-serif text-xl text-ink">Lo que hace crecer la red</h3>
               <ul className="mt-3 space-y-2 text-sm text-ink/75">
-                <li>· Bloque "Desempeño en tribunales de MdP" (fueros, causas, juzgados).</li>
-                <li>· Publicaciones indexadas de SAIJ y Google Scholar.</li>
-                <li>· Casos destacados cargados por el propio abogado (anonimizados).</li>
-                <li>· Consentimiento explícito antes de publicar (Ley 25.326).</li>
+                <li>· <strong>Panel por rol</strong>: cada abogado ve sus leads, turnos y perfil editable.</li>
+                <li>· <strong>Vista del Dr. Moix</strong> sobre toda la red con métricas de derivación y conversión.</li>
+                <li>· Tracking "referido por Moix" en cada lead para trazabilidad total.</li>
+                <li>· Reportes mensuales automáticos por email.</li>
+                <li>· Exportación de datos (CSV) y auditoría de accesos.</li>
               </ul>
             </div>
+          </div>
 
-            <div className="rounded-2xl border border-ink/10 bg-paper p-6">
-              <p className="text-xs uppercase tracking-widest text-gold">Fase 3 · Panel y métricas</p>
-              <h3 className="mt-2 font-serif text-xl text-ink">
-                Panel privado para abogados y para el Dr. Moix
-              </h3>
-              <ul className="mt-3 space-y-2 text-sm text-ink/75">
-                <li>· Cada abogado ve sus leads, turnos y perfil editable.</li>
-                <li>· Dr. Moix ve la red completa: derivaciones, conversión, actividad.</li>
-                <li>· Tracking "referido por Moix" en cada lead para transparencia.</li>
-                <li>· Reportes mensuales por email.</li>
-              </ul>
+          {/* El producto final — pensado para explicar al abogado que recibe el sitio */}
+          <div className="mt-12 rounded-3xl border border-ink/10 bg-ink text-paper p-8 md:p-10">
+            <p className="text-xs uppercase tracking-widest text-gold">Cierre · el producto final</p>
+            <h3 className="mt-2 font-serif text-3xl">Cómo queda tu sitio al terminar las tres fases</h3>
+            <p className="mt-3 text-paper/80 max-w-3xl">
+              Un directorio legal marplatense con el Dr. Moix como figura central y
+              una red curada de profesionales matriculados en el CAMDP, atendido
+              24/7 por un asistente inteligente que orienta al consultante y lo
+              lleva hasta la agenda del abogado adecuado.
+            </p>
+
+            <div className="mt-8 grid gap-6 md:grid-cols-3">
+              <div>
+                <p className="font-serif text-lg text-gold">Para el consultante</p>
+                <ul className="mt-2 space-y-1.5 text-sm text-paper/80">
+                  <li>· Explica su problema en lenguaje coloquial.</li>
+                  <li>· Recibe 1 a 3 recomendaciones fundamentadas.</li>
+                  <li>· Agenda su consulta en dos clicks.</li>
+                  <li>· Confirmación por email o WhatsApp.</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-serif text-lg text-gold">Para cada abogado</p>
+                <ul className="mt-2 space-y-1.5 text-sm text-paper/80">
+                  <li>· Perfil profesional con matrícula verificada.</li>
+                  <li>· Casos, publicaciones y estadística judicial.</li>
+                  <li>· Calendario propio integrado.</li>
+                  <li>· Panel privado con sus leads y turnos.</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-serif text-lg text-gold">Para el Dr. Moix</p>
+                <ul className="mt-2 space-y-1.5 text-sm text-paper/80">
+                  <li>· Vista integral de la red y su actividad.</li>
+                  <li>· Cada lead trazado como "referido por Moix".</li>
+                  <li>· Métricas de derivación y conversión.</li>
+                  <li>· Reportes mensuales listos para leer.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-8 grid gap-6 md:grid-cols-2 border-t border-paper/15 pt-8">
+              <div>
+                <p className="font-serif text-lg text-gold">Cumplimiento sin sorpresas</p>
+                <ul className="mt-2 space-y-1.5 text-sm text-paper/80">
+                  <li>· <strong>Ley 25.326</strong> de Protección de Datos Personales aplicada por diseño.</li>
+                  <li>· Reglas del <strong>CAMDP</strong> sobre publicidad y derivación respetadas en todo el flujo.</li>
+                  <li>· Consentimiento explícito de cada abogado antes de publicar.</li>
+                  <li>· Opt-out visible en todo perfil y baja en 48 h hábiles.</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-serif text-lg text-gold">Sin ataduras</p>
+                <ul className="mt-2 space-y-1.5 text-sm text-paper/80">
+                  <li>· Código propio, sin dependencias de plataformas cerradas.</li>
+                  <li>· Base de datos exportable en cualquier momento.</li>
+                  <li>· Deploy en la nube con costo mensual controlado.</li>
+                  <li>· Documentación técnica completa entregada al final.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-3 border-t border-paper/15 pt-6 text-sm text-paper/70">
+              <span className="rounded-full bg-paper/10 px-3 py-1">Tiempo total estimado: ~7 semanas</span>
+              <span className="rounded-full bg-paper/10 px-3 py-1">Sitio en vivo desde la Fase 1</span>
+              <span className="rounded-full bg-paper/10 px-3 py-1">Iteraciones semanales con el Dr. Moix</span>
             </div>
           </div>
 
           <p className="mt-8 text-xs text-ink/50">
-            Todos los desarrollos siguen la Ley 25.326 (Protección de Datos
-            Personales) y las reglas del Colegio de Abogados de MdP sobre publicidad
-            profesional.
+            Los tiempos son estimativos y se ajustan según la disponibilidad de
+            datos (verificación en el padrón del CAMDP, consentimientos, integraciones
+            con Cal.com, Resend y Twilio).
           </p>
         </div>
       </section>
