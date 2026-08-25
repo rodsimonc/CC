@@ -14,6 +14,35 @@ export const DEMO_LAWYERS: Lawyer[] = [
     photo_url: null,
     email: "contacto@moixabogados.com.ar",
     phone: null,
+    mentions: [
+      {
+        year: "2024",
+        title:
+          "Abogado de policías detenidos cuestiona que se privilegie declaraciones de presos frente a carreras intachables",
+        outlet: "Infobrisas",
+        url: "https://www.infobrisas.com/noticias/2024/05/09/68564-abogado-de-policias-detenidos-cuestiona-que-se-privilegie-declaraciones-de-presos-frente-a-carreras-intachables",
+        snippet:
+          "Defensa de personal policial imputado en la causa de asociación ilícita mixta en Mar del Plata.",
+      },
+      {
+        year: "s/f",
+        title:
+          "Pampillón sin juicio: el Tribunal fundamentó que no puede interceder en un acuerdo entre partes",
+        outlet: "La Capital MdP",
+        url: "https://www.lacapitalmdp.com/temas/cristian-moix/",
+        snippet:
+          "Intervención en la causa por hechos vinculados al FoNaPa, con acuerdos alternativos al debate.",
+      },
+      {
+        year: "s/f",
+        title:
+          "Su abogado dijo que Viglione está dispuesto a responder con su patrimonio",
+        outlet: "La Capital MdP",
+        url: "https://www.lacapitalmdp.com/temas/cristian-moix/",
+        snippet:
+          "Defensa técnica en una causa de inversiones fraudulentas, con planteos sobre patrimonio del imputado.",
+      },
+    ],
   },
   {
     slug: "ana-benitez",

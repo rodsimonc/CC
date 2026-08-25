@@ -25,27 +25,27 @@ python -m playwright install --with-deps chromium
 
 ## Fuentes
 
-Primarias (obligatorias, base del perfil):
+Primarias (activas):
 
-- **CAMDP** — `src/camdp.py` — padrón oficial: matrícula, estado, año de inscripción, datos de contacto. Fuente de verdad.
-- **MEV SCBA** — `src/mev.py` — expedientes públicos: volumen, fueros, juzgados frecuentes.
+- **CAMDP** — `src/camdp.py` — padrón oficial: matrícula, estado, año de inscripción. Fuente de verdad.
+- **Prensa local** — `src/prensa.py` — La Capital MdP, Infobrisas, 0223, Ahora MdP. Indexación de menciones donde el letrado interviene profesionalmente.
 
-Complementarias (enriquecen, no bloquean publicación):
+Descartadas tras evaluación:
 
-- **CIJ** — `src/cij.py` — fallos donde el letrado es mencionado.
-- **SAIJ** — `src/saij.py` — publicaciones doctrinarias.
-- **Prensa local** — `src/prensa.py` — La Capital MdP, 0223, Ahora MdP.
-- (extensible: UNMDP/UFASTA/UCA para cargos docentes; LinkedIn público sólo con ToS respetados; Boletín Oficial PBA para designaciones y sanciones; Google Scholar para papers).
+- **MEV SCBA** — `src/mev.py` — requiere credenciales personales del letrado y el fuero penal está restringido a las partes. No puede consultarse sin autenticación ni cederse cuentas por ToS de la SCBA. Si un abogado quiere mostrar estadística judicial, la carga él mismo desde el panel privado con su respaldo.
+- **CIJ** — `src/cij.py` — el Centro de Información Judicial fue **discontinuado por la CSJN en mayo 2025** (Acordada 10/2025). Si más adelante se estabiliza el reemplazo, se re-evalúa.
+- **SAIJ** — `src/saij.py` — el portal aplica bot protection al scraping directo. Se cita puntualmente cuando el abogado aporta el enlace.
 
 ## Pipeline
 
 `src/pipeline.py` orquesta:
 
 1. `camdp.lookup_by_bar_number` (o `lookup_by_name`) → si no hay coincidencia, aborta.
-2. `mev.stats_by_lawyer_name` → agrega estadística de desempeño.
-3. Fuentes complementarias corren en paralelo (`ThreadPoolExecutor`).
-4. Devuelve un `LawyerProfileDraft` no publicado.
-5. Un admin revisa el draft, obtiene consentimiento del abogado y recién ahí publica.
+2. `prensa.mentions` → indexa menciones recientes del letrado en medios locales.
+3. Devuelve un `LawyerProfileDraft` no publicado.
+4. Un admin revisa el draft, obtiene consentimiento del abogado y recién ahí publica.
+
+Los módulos `mev.py`, `cij.py` y `saij.py` quedan como scaffolds sin implementación por las razones documentadas más arriba.
 
 ## Scripts
 

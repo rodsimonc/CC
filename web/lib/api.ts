@@ -1,5 +1,13 @@
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
+export type Mention = {
+  year?: string;
+  title: string;
+  outlet: string;
+  url: string;
+  snippet?: string;
+};
+
 export type Lawyer = {
   slug: string;
   full_name: string;
@@ -12,6 +20,7 @@ export type Lawyer = {
   city?: string;
   email?: string | null;
   phone?: string | null;
+  mentions?: Mention[];
 };
 
 export type Recommendation = {

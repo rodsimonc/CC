@@ -14,16 +14,26 @@ Obligaciones clave:
 - **Registro en la AAIP.** La base de datos de usuarios/abogados debe inscribirse ante la Agencia de Acceso a la Información Pública antes de operar comercialmente.
 - **Medidas de seguridad.** Contraseñas con `scrypt`, TLS obligatorio en tránsito, backups cifrados, control de acceso por rol.
 
-## 2. Perfiles de abogados sin consentimiento previo
+## 2. Perfiles de abogados y fuentes públicas
 
-Los scrapers construyen perfiles con datos públicos (padrón CAMDP, MEV SCBA, fallos CIJ, publicaciones SAIJ, prensa). Aunque son datos públicos, la agregación requiere cuidado adicional.
+Los perfiles se construyen a partir de:
+
+- **Padrón del CAMDP** — verificación de matrícula activa (obligatorio).
+- **Prensa local** (La Capital MdP, Infobrisas, Página12) — indexación de menciones donde el letrado interviene profesionalmente.
+- **Información aportada por el propio abogado** — bio, casos representativos anonimizados, publicaciones, cargos docentes, etc.
+
+Fuentes que se estudiaron y se descartaron:
+
+- **MEV SCBA** — requiere credenciales personales del letrado; el fuero penal está restringido a las partes. No se puede scrapear ni cederse cuentas por ToS. Si un abogado quiere mostrar estadística judicial, la carga él mismo con su respaldo.
+- **CIJ** — discontinuado por la CSJN en mayo 2025 (Acordada 10/2025).
+- **SAIJ scraping automático** — el portal aplica bot protection. Se cita puntualmente cuando el abogado aporta el enlace.
 
 Reglas del proyecto:
 
-- Todo perfil queda en estado `draft` hasta contacto y consentimiento del abogado (verificable con firma o correo trazable).
-- Sin coincidencia validada en el padrón oficial del CAMDP, el perfil no se publica bajo ningún concepto.
-- Aun sin consentimiento explícito, el sitio ofrece un mecanismo de **opt-out visible** (link "Solicitar remoción de mi perfil") que remueve el perfil dentro de las 48 hs hábiles.
-- Fuentes complementarias solo enriquecen; no son suficientes por sí solas para publicar.
+- Todo perfil requiere **consentimiento explícito** del abogado (correo trazable o firma) antes de publicarse.
+- Sin coincidencia validada en el padrón oficial del CAMDP, el perfil no se publica.
+- Opt-out visible en cada perfil (link "Solicitar remoción de mi perfil") con baja efectiva en 48 hs hábiles.
+- Las menciones en prensa se muestran con enlace a la nota original y sin edición del contenido.
 
 ## 3. Publicidad de la abogacía — Colegio de Abogados de Mar del Plata (CAMDP)
 
