@@ -40,11 +40,11 @@ Separación clara entre el backend transaccional (`api/`) y el servicio de IA (`
 
 ## ADR-004 — Curación humana obligatoria antes de publicar perfil
 
-**Contexto.** Los scrapers extraen datos públicos, pero pueden contener errores, homónimos o menciones fuera de contexto. Además, la Ley 25.326 y las reglas del CAMDP exigen consentimiento.
+**Contexto.** El sitio combina datos verificados en el padrón del CAMDP con menciones extraídas de prensa local y con información aportada por el propio abogado. La agregación de datos personales, aún con fuentes públicas, requiere consentimiento (Ley 25.326) y respeto de las reglas del CAMDP sobre publicidad profesional.
 
-**Decisión.** Todo perfil generado por scraper queda en estado `draft`. Solo un admin lo publica tras verificar y obtener consentimiento del abogado. Sin coincidencia en el padrón del CAMDP, no se publica.
+**Decisión.** Todo perfil queda en estado `draft` hasta obtener consentimiento explícito del abogado. Sin coincidencia en el padrón oficial del CAMDP, no se publica. Se descarta el scraping directo del MEV SCBA (login obligatorio y fuero penal restringido) y del CIJ (discontinuado en 2025); la estadística judicial la aporta el propio abogado si desea mostrarla.
 
-**Consecuencias.** El sitio nunca lista un abogado sin verificación. Se pierde velocidad de alta, se gana confianza y cumplimiento.
+**Consecuencias.** El sitio nunca lista un abogado sin verificación. Se pierde velocidad de alta, se gana confianza y cumplimiento. La agenda de trabajo baja el alcance del componente `scrapers/` respecto al brief inicial: en producción solo corren fuentes públicas sin autenticación (padrón CAMDP y prensa local indexada).
 
 ## ADR-005 — JWT propio, sin OAuth
 

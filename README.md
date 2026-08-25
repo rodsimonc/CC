@@ -84,6 +84,8 @@ Paso a paso y cableado de URLs cruzadas en `docs/DEPLOY-RENDER.md`.
 
 Fase 1 (actual): MVP visual. Landing con chatbot mock, API con CRUD básico y seed, servicio RAG con endpoint eco, docs esqueleto.
 
-Fase 2: RAG real sobre índice FAISS, scrapers en producción, agenda con Cal.com, autenticación completa.
+Fase 2: chatbot con IA real (Gemini/Claude), agenda con Cal.com, notificaciones por email y WhatsApp, base de datos en producción y autenticación completa.
 
-Fase 3: panel de abogados, tracking de referidos, métricas de conversión.
+Fase 3: panel por rol (cada abogado edita su perfil y ve sus leads), vista del Dr. Moix sobre la red, tracking "referido por Moix", reportes mensuales, indexación automática de menciones en prensa local.
+
+Fuentes descartadas del brief inicial (por inviabilidad técnica o legal, documentado en `docs/LEGAL-COMPLIANCE.md`): scraping directo del MEV SCBA, CIJ (discontinuado en mayo 2025) y SAIJ automático. La estadística judicial que quiera mostrar un abogado la carga desde su panel privado.

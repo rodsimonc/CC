@@ -198,11 +198,11 @@ export default function HomePage() {
               <p className="text-xs uppercase tracking-widest text-gold">Fase 2 · Producto real</p>
               <h3 className="mt-2 font-serif text-xl text-ink">Lo que se conecta a la realidad</h3>
               <ul className="mt-3 space-y-2 text-sm text-ink/75">
-                <li>· <strong>Chatbot con IA real</strong> (Gemini/Claude) sobre el padrón del CAMDP y la normativa argentina.</li>
+                <li>· <strong>Chatbot con IA real</strong> (Gemini/Claude) que conversa, clasifica el área y deriva con razones claras.</li>
                 <li>· <strong>Agenda con Cal.com</strong> por abogado, con confirmación por email (Resend) y WhatsApp (Twilio).</li>
-                <li>· <strong>Perfiles enriquecidos</strong>: estadísticas del MEV SCBA, publicaciones de SAIJ y Google Scholar.</li>
-                <li>· <strong>Base de datos en producción</strong> (Postgres), leads persistidos, autenticación completa.</li>
-                <li>· Alta guiada de abogado con consentimiento (Ley 25.326).</li>
+                <li>· <strong>Base de datos en producción</strong> (Postgres) para leads, turnos y perfiles.</li>
+                <li>· <strong>Autenticación completa</strong> con alta guiada y consentimiento del abogado (Ley 25.326).</li>
+                <li>· <strong>Verificación de matrícula</strong> en el padrón del CAMDP al momento de sumar cada abogado.</li>
               </ul>
             </div>
 
@@ -213,13 +213,27 @@ export default function HomePage() {
               <p className="text-xs uppercase tracking-widest text-ink/60">Fase 3 · Escala y gobierno</p>
               <h3 className="mt-2 font-serif text-xl text-ink">Lo que hace crecer la red</h3>
               <ul className="mt-3 space-y-2 text-sm text-ink/75">
-                <li>· <strong>Panel por rol</strong>: cada abogado ve sus leads, turnos y perfil editable.</li>
+                <li>· <strong>Panel por rol</strong>: cada abogado edita su perfil y carga sus casos representativos (anonimizados).</li>
+                <li>· Cada abogado ve sus <strong>leads y turnos</strong> propios.</li>
                 <li>· <strong>Vista del Dr. Moix</strong> sobre toda la red con métricas de derivación y conversión.</li>
                 <li>· Tracking "referido por Moix" en cada lead para trazabilidad total.</li>
-                <li>· Reportes mensuales automáticos por email.</li>
-                <li>· Exportación de datos (CSV) y auditoría de accesos.</li>
+                <li>· Reportes mensuales automáticos por email y exportación (CSV).</li>
+                <li>· Indexación automática de menciones en <strong>prensa local</strong> (La Capital MdP, Infobrisas) por perfil.</li>
               </ul>
             </div>
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-ink/10 bg-paper/60 p-5 text-sm text-ink/70">
+            <p className="text-xs uppercase tracking-widest text-ink/50">Qué no promete el proyecto</p>
+            <p className="mt-2 leading-relaxed">
+              El sitio <strong>no</strong> extrae expedientes del sistema MEV de
+              la SCBA (requiere credenciales personales y el fuero penal está
+              restringido), <strong>no</strong> replica el CIJ (discontinuado en
+              mayo 2025) y <strong>no</strong> reemplaza al padrón oficial. La
+              estadística judicial que quiera mostrarse en un perfil la carga el
+              propio abogado, con el respaldo que decida (capturas, exportaciones
+              propias de MEV, etc.).
+            </p>
           </div>
 
           {/* El producto final — pensado para explicar al abogado que recibe el sitio */}
@@ -246,9 +260,10 @@ export default function HomePage() {
               <div>
                 <p className="font-serif text-lg text-gold">Para cada abogado</p>
                 <ul className="mt-2 space-y-1.5 text-sm text-paper/80">
-                  <li>· Perfil profesional con matrícula verificada.</li>
-                  <li>· Casos, publicaciones y estadística judicial.</li>
-                  <li>· Calendario propio integrado.</li>
+                  <li>· Perfil profesional editorial, con matrícula verificada en el CAMDP.</li>
+                  <li>· Menciones en medios indexadas automáticamente.</li>
+                  <li>· Sección de casos representativos cargada por él mismo.</li>
+                  <li>· Calendario propio integrado (Cal.com).</li>
                   <li>· Panel privado con sus leads y turnos.</li>
                 </ul>
               </div>

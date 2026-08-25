@@ -139,9 +139,9 @@ export function ChatWidget() {
         </p>
       </header>
       <div className="px-4 py-2 border-b border-ink/10 bg-gold/5 text-[11px] text-ink/70 leading-snug">
-        <strong className="text-ink">En Fase 2</strong> este chat usa IA real con RAG sobre el padrón del CAMDP,
-        estadísticas del MEV SCBA y normativa argentina indexada. Recomienda 1 a 3
-        abogados con razones fundadas y ofrece agenda contextual.
+        <strong className="text-ink">En Fase 2</strong> este chat usa IA real (Gemini o Claude) para
+        conversar, entender tu situación y recomendar 1 a 3 abogados de la red
+        con razones claras, ofreciendo agenda directa.
       </div>
 
       <div ref={boxRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gradient-to-b from-paper to-paper-warm">
