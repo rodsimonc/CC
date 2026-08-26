@@ -275,13 +275,20 @@ def _fallback(question: str) -> ChatResult:
 
 
 _gemini_model = None
+# Diagnóstico: guardamos la última razón por la que Gemini no funcionó, para
+# poder verla desde /health y desde /api/diagnose sin tener que buscar en logs.
+LAST_LLM_ERROR: str | None = None
 
 
 def _get_gemini():
-    global _gemini_model
+    global _gemini_model, LAST_LLM_ERROR
     if _gemini_model is not None:
         return _gemini_model
     if not settings.has_llm:
+        LAST_LLM_ERROR = (
+            f"has_llm=False (llm_provider={settings.llm_provider!r}, "
+            f"google_api_key set={bool(settings.google_api_key)})"
+        )
         return None
     try:
         import google.generativeai as genai  # type: ignore
@@ -292,18 +299,21 @@ def _get_gemini():
             system_instruction=SYSTEM_PROMPT,
             generation_config={"response_mime_type": "application/json"},
         )
+        log.info("Gemini inicializado con modelo=%s", settings.gemini_model)
+        LAST_LLM_ERROR = None
         return _gemini_model
-    except Exception:  # pragma: no cover
+    except Exception as e:  # pragma: no cover
+        LAST_LLM_ERROR = f"init: {type(e).__name__}: {e}"
         log.exception("no pude inicializar Gemini; caigo a fallback")
         return None
 
 
 def _ask_gemini(question: str, history: list[dict] | None = None) -> dict[str, Any] | None:
+    global LAST_LLM_ERROR
     model = _get_gemini()
     if model is None:
         return None
     try:
-        # Convertimos el history al formato de Gemini y arrancamos una sesión de chat
         gemini_history = []
         for m in history or []:
             role = m.get("role")
@@ -323,10 +333,38 @@ def _ask_gemini(question: str, history: list[dict] | None = None) -> dict[str, A
             raw = raw.strip("`")
             if raw.startswith("json"):
                 raw = raw[4:].strip()
-        return json.loads(raw)
-    except Exception:
-        log.exception("fallo la llamada a Gemini o parseo del JSON")
+        result = json.loads(raw)
+        LAST_LLM_ERROR = None
+        return result
+    except json.JSONDecodeError as e:
+        LAST_LLM_ERROR = f"parse: {type(e).__name__}: {e}"
+        log.exception("no pude parsear la respuesta de Gemini")
         return None
+    except Exception as e:
+        LAST_LLM_ERROR = f"call: {type(e).__name__}: {e}"
+        log.exception("fallo la llamada a Gemini")
+        return None
+
+
+def diagnose(question: str = "Detuvieron a un familiar esta madrugada.") -> dict[str, Any]:
+    """Test rápido de conectividad con Gemini. Devuelve estado detallado.
+
+    Útil para hacer curl al chatbot en producción cuando algo no cierra:
+      GET /api/diagnose?q=algo
+    """
+    has_llm = settings.has_llm
+    model_name = settings.gemini_model if has_llm else None
+    parsed = _ask_gemini(question) if has_llm else None
+    return {
+        "has_llm": has_llm,
+        "provider": settings.llm_provider,
+        "model": model_name,
+        "google_api_key_set": bool(settings.google_api_key),
+        "google_api_key_length": len(settings.google_api_key or ""),
+        "gemini_response": parsed,
+        "last_error": LAST_LLM_ERROR,
+        "question": question,
+    }
 
 
 # --- entrada pública -----------------------------------------------------

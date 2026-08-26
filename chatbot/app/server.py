@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from .config import settings
 from .ingest import reindex
-from .rag import answer_with_rag
+from .rag import answer_with_rag, diagnose
 
 logging.basicConfig(level=settings.log_level)
 log = logging.getLogger("chatbot")
@@ -46,13 +46,25 @@ class ChatResponse(BaseModel):
 
 @app.get("/health")
 def health() -> dict:
+    # LAST_LLM_ERROR se re-lee desde el módulo rag para reflejar el estado actual
+    from . import rag as _rag
     return {
         "ok": True,
         "service": "chatbot",
         "version": "0.1.0",
         "provider": settings.llm_provider,
+        "model": settings.gemini_model,
         "llm_ready": settings.has_llm,
+        "last_error": _rag.LAST_LLM_ERROR,
     }
+
+
+@app.get("/api/diagnose")
+def diagnose_endpoint(q: str = "Detuvieron a un familiar esta madrugada.") -> dict:
+    """Prueba de conectividad con Gemini. Ejemplo:
+    curl 'https://moix-legal-chatbot-che0.onrender.com/api/diagnose?q=probando'
+    """
+    return diagnose(q)
 
 
 @app.post("/api/chat", response_model=ChatResponse)
