@@ -119,18 +119,26 @@ export function ChatWidget() {
           history: historyForBackend,
         }),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      setMessages((m) => [
-        ...m,
-        {
-          role: "assistant",
-          content: data.answer,
-          recommendations: Array.isArray(data.recommendations) ? data.recommendations : undefined,
-          booking_cta: data.booking_cta ?? undefined,
-        },
-      ]);
-    } catch (_err) {
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && typeof data.answer === "string") {
+        setMessages((m) => [
+          ...m,
+          {
+            role: "assistant",
+            content: data.answer,
+            recommendations: Array.isArray(data.recommendations) ? data.recommendations : undefined,
+            booking_cta: data.booking_cta ?? undefined,
+          },
+        ]);
+      } else {
+        // Log a la consola del navegador para poder diagnosticar sin
+        // esconder el problema detrás del fallback silencioso.
+        console.warn("[chat] respuesta inválida", res.status, data);
+        setMessages((m) => [...m, fallbackLocal(clean)]);
+      }
+    } catch (err) {
+      console.warn("[chat] fetch failed", err);
       setMessages((m) => [...m, fallbackLocal(clean)]);
     } finally {
       setPending(false);
