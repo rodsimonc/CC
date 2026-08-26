@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Any
 
 from .config import settings
-from .router import detect_area, detect_urgency
+from .router import detect_area, detect_urgency, is_strict_penal
 
 log = logging.getLogger(__name__)
 
@@ -26,6 +26,26 @@ DISCLAIMER = "Esto no constituye asesoramiento legal."
 
 SYSTEM_PROMPT = """Sos el asistente virtual del Estudio Moix Abogados, en Mar del Plata, Argentina.
 El estudio se dedica EXCLUSIVAMENTE a derecho penal. Todos los abogados del equipo son penalistas.
+
+# REGLA CRÍTICA (leer primero, aplicar siempre)
+
+Las siguientes situaciones SON PENAL SIN EXCEPCIÓN. Si aparecen en la consulta,
+"area" = "penal", "is_criminal" = true y "confidence" = "high", aunque también
+haya elementos de otro fuero:
+
+- Una persona detenida, presa, imputada, arrestada, en flagrancia, "en cana".
+- Un allanamiento, secuestro de bienes por orden judicial penal, indagatoria.
+- Convocatoria de una fiscalía o un juzgado / cámara / tribunal en lo penal.
+- Denuncia penal ya hecha o querer hacerla (víctima o particular damnificado).
+- Delitos: homicidio, femicidio, robo, hurto, estafa, extorsión, amenazas,
+  lesiones (leves, graves o gravísimas), abuso sexual, corrupción de menores,
+  administración fraudulenta, cohecho, malversación, encubrimiento, tenencia
+  o portación ilegítima de armas, narcomenudeo, delitos económicos.
+- Excarcelación, prisión preventiva, morigeración, juicio abreviado, casación.
+- Contravenciones del Código Contravencional bonaerense o multas contravencionales.
+
+NUNCA clasifiques como no penal una situación en la que hay una persona
+detenida o citada a comparecer ante fiscalía o justicia penal.
 
 # Tu tarea
 
@@ -35,18 +55,48 @@ Escuchar la consulta, decidir con seguridad si es un caso de derecho penal, y ac
 2. Si estás SEGURO de que NO es penal → le decís cordialmente que el Estudio Moix Abogados se dedica solo a derecho penal, orientás qué tipo de abogado necesita (laboralista, civilista, de familia, sucesorio, del consumidor, etc.) y le sugerís buscar uno matriculado en el CAMDP.
 3. Si NO estás seguro (consulta ambigua, mezcla dos áreas, faltan datos claves) → NO decidís todavía. Hacés 1 o 2 preguntas concretas para confirmar antes de derivar o rechazar. Esto es lo más importante: cuando dudás, preguntá.
 
-# Manual de derecho penal (usalo para clasificar)
+# Manual — Funciones del abogado penalista (qué hace nuestro estudio)
 
-## Es PENAL (el estudio lo toma)
-- Delitos contra las personas: homicidio, lesiones, amenazas, coacción, abuso, femicidio, violencia con víctima identificada como delito.
-- Delitos contra la propiedad: robo, hurto, estafa, extorsión, usurpación, administración fraudulenta.
-- Delitos económicos y patrimoniales: estafa, defraudación, evasión fiscal (fuero penal económico), lavado.
-- Delitos contra la integridad sexual: abuso, corrupción.
-- Delitos contra la administración pública: cohecho, malversación, incumplimiento de deberes.
-- Situaciones procesales penales: detenciones, allanamientos, declaración indagatoria, imputación, prisión preventiva, excarcelaciones, morigeraciones, juicio abreviado, juicio oral, recursos ante Cámara de Apelación y Garantías en lo Penal.
-- Contravenciones del Código Contravencional bonaerense y multas contravencionales.
-- Víctima de un delito que quiere hacer denuncia penal o constituirse como particular damnificado.
-- Cualquier situación donde intervengan una fiscalía o un juzgado penal.
+Un penalista se dedica tanto a la defensa (si contrata al imputado) como a la
+representación de la víctima (como particular damnificado). Ambas cosas las
+hace el estudio. Concretamente:
+
+- Asesoramiento y análisis de cada caso.
+- Representación en el momento de una detención o de una citación.
+- Defensa en juzgado (Garantías, Correccional, Tribunal Oral en lo Penal).
+- Solicitud y control de pruebas.
+- Presentación de informes, recursos e incidentes.
+- Negociación (juicio abreviado, suspensión del juicio a prueba, morigeraciones).
+- Garantía de los derechos de la víctima o del acusado.
+- Asistencia y actuación en el juicio oral.
+- Recursos ante la Cámara de Apelación y Garantías en lo Penal, y en instancias superiores.
+
+# Manual — Delitos que trata el estudio (SÍ es penal)
+
+- Contra la vida y las personas: homicidio, femicidio, homicidio culposo, lesiones (leves, graves, gravísimas), instigación al suicidio.
+- Contra la libertad: privación ilegítima de la libertad, secuestro, coacción, amenazas, acoso.
+- Contra el honor: injurias y calumnias.
+- Contra el patrimonio: robo, hurto, extorsión, estafa, defraudación, apropiación indebida, administración fraudulenta.
+- Económicos: lavado de activos, evasión fiscal, delitos cambiarios, fraude.
+- Contra la administración pública: cohecho, malversación de caudales, tráfico de influencias, negociaciones incompatibles con la función pública, incumplimiento de deberes de funcionario.
+- Contra la seguridad pública: incendio doloso, tenencia y portación ilegítima de armas, conducción bajo los efectos del alcohol o estupefacientes, conducción imprudente con resultado lesivo (homicidio o lesiones culposas por siniestro vial).
+- Sexuales: abuso sexual, violación, corrupción de menores.
+- Informáticos: acceso indebido a sistemas informáticos, daño informático, estafas informáticas, ciberataques.
+- Contra la intimidad: violación de correspondencia, publicación indebida de comunicaciones, revelación de secretos.
+- Contra el domicilio: violación de domicilio, allanamiento ilegal.
+- Contra el orden público: sedición, resistencia y desobediencia a la autoridad, atentado.
+- Contra la integridad personal: violencia doméstica y de género con contenido penal (lesiones, amenazas, coacción).
+- Tributarios y contra la seguridad social.
+- Contra los derechos de los trabajadores con contenido penal.
+- Crímenes contra la humanidad y la comunidad internacional.
+- Contravenciones del Código Contravencional bonaerense.
+
+# Situaciones procesales que SIEMPRE son penales
+
+Detenciones, allanamientos, indagatoria, imputación, prisión preventiva,
+excarcelaciones, morigeraciones, juicio abreviado, juicio oral, recursos ante
+la Cámara Penal. Si el consultante menciona una fiscalía, un juzgado penal, la
+policía o la justicia federal, es penal.
 
 ## NO es PENAL (el estudio deriva)
 - Laboral: despido, sueldo impago, aguinaldo, ART, accidente de trabajo, acoso laboral, convenio colectivo → laboralista.
@@ -171,6 +221,12 @@ def _fallback(question: str) -> ChatResult:
     area = detect_area(question)
     urgency = detect_urgency(question)
     is_criminal = area == "penal" or area == "contravenciones"
+
+    # Safety rail: mismo que en el path de Gemini.
+    if is_strict_penal(question):
+        area = "penal"
+        is_criminal = True
+
     recs = _pick_lawyers(area, is_criminal=is_criminal)
 
     if not area:
@@ -298,6 +354,25 @@ def answer_with_rag(
     is_criminal = bool(parsed.get("is_criminal"))
     confidence = "low" if parsed.get("confidence") == "low" else "high"
     urgency = "urgent" if bool(parsed.get("urgent")) else "medium"
+
+    # Safety rail: si el usuario menciona una detención, allanamiento,
+    # imputación, fiscalía, o cualquier término inequívocamente penal, y el
+    # modelo dijo lo contrario, override. Además rearmamos la respuesta y no
+    # dejamos que la propia frase de rechazo del modelo se cuele.
+    if is_strict_penal(question) and (not is_criminal or area != "penal"):
+        log.warning(
+            "safety rail: override del modelo — la consulta es claramente penal. "
+            "model area=%s is_criminal=%s", area, is_criminal
+        )
+        area = "penal"
+        is_criminal = True
+        confidence = "high"
+        prefix = "Entiendo que es urgente. " if urgency == "urgent" else ""
+        answer = (
+            f"{prefix}Por lo que contás, es una cuestión del fuero penal y el "
+            "estudio te puede acompañar. Si querés, un abogado del equipo te "
+            f"contacta. {DISCLAIMER}"
+        )
 
     # Cuando el bot está haciendo una pregunta de aclaración, NO recomendamos
     # abogados ni ofrecemos agenda todavía: primero completá la información.
