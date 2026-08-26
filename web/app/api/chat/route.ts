@@ -18,12 +18,55 @@ const schema = z.object({
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
 export async function POST(req: Request) {
-  const body = schema.parse(await req.json());
-  const upstream = await fetch(`${API}/api/v1/chat`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(body),
+  let body: unknown;
+  try {
+    body = schema.parse(await req.json());
+  } catch (err) {
+    return NextResponse.json(
+      { error: "validation", detail: String(err) },
+      { status: 400 },
+    );
+  }
+
+  const target = `${API}/api/v1/chat`;
+  try {
+    const upstream = await fetch(target, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (!upstream.ok) {
+      const text = await upstream.text();
+      return NextResponse.json(
+        {
+          error: "upstream",
+          status: upstream.status,
+          target,
+          detail: text.slice(0, 500),
+        },
+        { status: 502 },
+      );
+    }
+    const data = await upstream.json();
+    return NextResponse.json(data, { status: 200 });
+  } catch (err) {
+    // Falla de red: DNS, ECONNREFUSED, timeout. Muy útil para diagnosticar
+    // cuando NEXT_PUBLIC_API_URL no está seteada en producción.
+    return NextResponse.json(
+      {
+        error: "network",
+        target,
+        detail: err instanceof Error ? err.message : String(err),
+      },
+      { status: 502 },
+    );
+  }
+}
+
+// Endpoint GET para diagnosticar desde el navegador o curl sin body.
+export async function GET() {
+  return NextResponse.json({
+    api_url: API,
+    hint: "POST /api/chat con { session_id, question, history? } para conversar.",
   });
-  const data = await upstream.json();
-  return NextResponse.json(data, { status: upstream.status });
 }
