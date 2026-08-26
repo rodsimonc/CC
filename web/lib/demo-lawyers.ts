@@ -1,6 +1,8 @@
 import type { Lawyer } from "./api";
 
-// Perfiles para Fase 1 (MVP visual) cuando la API no está corriendo.
+// El sitio corresponde al Estudio Moix Abogados (todo el equipo es penalista).
+// Único perfil con datos verificables públicamente: Dr. Cristian Moix.
+// El resto del equipo se completa desde el panel privado en Fase 2.
 export const DEMO_LAWYERS: Lawyer[] = [
   {
     slug: "cristian-moix",
@@ -8,8 +10,8 @@ export const DEMO_LAWYERS: Lawyer[] = [
     bar_number: "CAMDP · matrícula activa",
     bar_status: "active",
     practice_areas: ["penal"],
-    headline: "Abogado penalista · Estudio propio en Mar del Plata",
-    bio: "Abogado dedicado al ejercicio de la defensa penal en el Departamento Judicial Mar del Plata. Titular y fundador del estudio Moix Abogados. Su práctica se centra en causas de complejidad ante los tribunales del fuero penal bonaerense, con actuación regular en instancias de apelación.",
+    headline: "Abogado penalista · Titular del Estudio Moix Abogados",
+    bio: "Abogado dedicado al ejercicio de la defensa penal en el Departamento Judicial Mar del Plata. Titular y fundador del Estudio Moix Abogados. Su práctica se centra en causas de complejidad ante los tribunales del fuero penal bonaerense, con actuación regular en instancias de apelación.",
     city: "Mar del Plata",
     photo_url: null,
     email: "contacto@moixabogados.com.ar",
@@ -69,38 +71,16 @@ export const DEMO_LAWYERS: Lawyer[] = [
       },
     ],
   },
-  {
-    slug: "ana-benitez",
-    full_name: "Dra. Ana Benítez",
-    bar_number: "CAMDP T° VII F° 812",
-    bar_status: "active",
-    practice_areas: ["familia", "sucesiones"],
-    headline: "Familia, divorcios y sucesiones. Enfoque colaborativo.",
-    bio: "Doce años ejerciendo en el fuero de familia de Mar del Plata. Especializada en mediación y procesos colaborativos.",
-    city: "Mar del Plata",
-  },
-  {
-    slug: "martin-losada",
-    full_name: "Dr. Martín Losada",
-    bar_number: "CAMDP T° V F° 431",
-    bar_status: "active",
-    practice_areas: ["laboral"],
-    headline: "Derecho laboral. Representación de trabajadores.",
-    bio: "Representación de trabajadores en despidos, accidentes y reclamos individuales. Trayectoria en juicios ante los tribunales del trabajo de MdP.",
-    city: "Mar del Plata",
-  },
-  {
-    slug: "lucia-ferrari",
-    full_name: "Dra. Lucía Ferrari",
-    bar_number: "CAMDP T° IX F° 1024",
-    bar_status: "active",
-    practice_areas: ["civil", "comercial", "consumidor"],
-    headline: "Civil y comercial. Defensa del consumidor.",
-    bio: "Contratos, defensa del consumidor, daños y perjuicios. Enfoque práctico y directo.",
-    city: "Mar del Plata",
-  },
 ];
 
 export function findDemoLawyer(slug: string): Lawyer | undefined {
   return DEMO_LAWYERS.find((l) => l.slug === slug);
 }
+
+// El equipo del estudio, mostrado como placeholders hasta que cada integrante
+// cargue su perfil desde el panel privado. Sin nombres inventados.
+export const TEAM_PLACEHOLDERS = [
+  { role: "Abogado penalista", note: "Segundo titular del estudio" },
+  { role: "Abogado penalista", note: "Miembro del equipo" },
+  { role: "Abogado penalista", note: "Miembro del equipo" },
+];

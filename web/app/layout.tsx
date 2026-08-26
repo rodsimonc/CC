@@ -4,15 +4,15 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
-    default: "Moix Legal — Directorio de abogados de Mar del Plata",
-    template: "%s · Moix Legal",
+    default: "Estudio Moix Abogados — Derecho penal en Mar del Plata",
+    template: "%s · Moix Abogados",
   },
   description:
-    "Consultá tu problema legal con un asistente inteligente y conectate con abogados matriculados de la red del Dr. Cristian Moix en Mar del Plata.",
+    "Defensa penal en Mar del Plata. Consultá con nuestro asistente virtual: te decimos si tu caso es para nosotros o te orientamos hacia el fuero correcto.",
   openGraph: {
     type: "website",
     locale: "es_AR",
-    siteName: "Moix Legal",
+    siteName: "Estudio Moix Abogados",
   },
 };
 

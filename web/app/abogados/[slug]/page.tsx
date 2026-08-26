@@ -259,7 +259,7 @@ export default function LawyerPage({ params }: Props) {
       </div>
 
       <footer className="border-t border-ink/10 py-8 text-center text-xs text-ink/50">
-        Este sitio no constituye asesoramiento legal. Referido por la red del Dr. Moix.
+        Este sitio no constituye asesoramiento legal. Estudio Moix Abogados · Mar del Plata.
       </footer>
     </main>
   );
