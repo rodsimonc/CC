@@ -56,11 +56,12 @@ const FALLBACK_NO_PENAL: Message = {
 
 function fallbackLocal(text: string): Message {
   const t = text.toLowerCase();
-  const penal = /(penal|delito|denuncia|detenid|preso|imputad|amenaza|robo|hurto|estafa|abus|lesion|homicid|allanamiento|excarcelaci|fiscal[ií]a|contravenci)/.test(
+  // Cubre conjugaciones y variantes rioplatenses.
+  const penal = /(penal|delito|delictiv|denuncia|deten|detuv|arrestad|preso|presa|en cana|imputa|amenaza|robo|hurto|estafa|abus|lesion|homicid|femicid|allanamient|excarcelac|prision preventiva|prisi[oó]n preventiva|fiscal[ií]a|indagatori|contravenci|juzgado penal|c[aá]mara penal|juicio abreviado)/.test(
     t,
   );
   if (penal) return FALLBACK_PENAL;
-  const otro = /(despid|laboral|trabajo|art|aguinald|sueldo|divorci|familia|alimentos|tenencia|custodia|violencia|sucesi|herenc|hereder|vecino|contrato|reclamo|da[nñ]os|consumidor|garant[ií]a|tr[aá]nsito|choque|multa|siniestro|administrativ|municipal)/.test(
+  const otro = /(despid|me\s+echaron|me\s+rajaron|laboral|trabajo|art|aguinald|sueldo|no me pagan|divorci|familia|alimentos|tenencia|custodia|violencia\s+(familiar|dom[eé]stica)|sucesi|herenc|hereder|vecino|contrato|reclamo\s+civil|da[nñ]os|consumidor|garant[ií]a|tr[aá]nsito|choque|multa\s+municipal|siniestro|administrativ|municipal)/.test(
     t,
   );
   if (otro) return FALLBACK_NO_PENAL;
