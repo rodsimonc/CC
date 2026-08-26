@@ -18,146 +18,67 @@ type Message = {
   booking_cta?: { lawyer_slug: string; href: string; label?: string } | null;
 };
 
-type AreaKey =
-  | "penal"
-  | "laboral"
-  | "familia"
-  | "sucesiones"
-  | "civil"
-  | "consumidor"
-  | "transito";
-
-const REC: Record<string, Recommendation> = {
-  "cristian-moix": {
-    slug: "cristian-moix",
-    full_name: "Dr. Cristian Moix",
-    headline: "Abogado penalista · Estudio propio en Mar del Plata",
-    reason: "Defensa técnica en causas del fuero penal bonaerense.",
-  },
-  "martin-losada": {
-    slug: "martin-losada",
-    full_name: "Dr. Martín Losada",
-    headline: "Derecho laboral · Representación de trabajadores",
-    reason: "Despidos, ART y reclamos individuales.",
-  },
-  "ana-benitez": {
-    slug: "ana-benitez",
-    full_name: "Dra. Ana Benítez",
-    headline: "Familia y sucesiones · Enfoque colaborativo",
-    reason: "Divorcios, alimentos, tenencia, sucesiones.",
-  },
-  "lucia-ferrari": {
-    slug: "lucia-ferrari",
-    full_name: "Dra. Lucía Ferrari",
-    headline: "Civil, comercial y defensa del consumidor",
-    reason: "Contratos, daños y perjuicios, reclamos al consumidor.",
-  },
-};
-
 const DISCLAIMER = "Esto no constituye asesoramiento legal.";
-
-function make(
-  slug: keyof typeof REC,
-  content: string,
-  cta = "Agendar consulta"
-): Message {
-  return {
-    role: "assistant",
-    content,
-    recommendations: [REC[slug]],
-    booking_cta: {
-      lawyer_slug: slug,
-      href: `/abogados/${slug}#agendar`,
-      label: cta,
-    },
-  };
-}
-
-const ANSWERS: Record<AreaKey, Message> = {
-  penal: make(
-    "cristian-moix",
-    `Entiendo. Suena a una cuestión del fuero penal. Los tiempos en penal corren rápido, así que conviene consultar cuanto antes con un defensor técnico para evaluar la situación procesal y los pasos a seguir. ${DISCLAIMER}`
-  ),
-  laboral: make(
-    "martin-losada",
-    `Parece un tema laboral. Hay plazos que corren desde el hecho (despido, accidente, no pago), así que conviene consultar pronto con un abogado laboralista para no perder derechos. ${DISCLAIMER}`
-  ),
-  familia: make(
-    "ana-benitez",
-    `Es un tema del fuero de familia. Según el caso puede resolverse por mediación o por vía judicial. Un profesional del fuero puede orientarte y evaluar el mejor camino. ${DISCLAIMER}`
-  ),
-  sucesiones: make(
-    "ana-benitez",
-    `Se trata de una sucesión. El proceso puede iniciarse en el domicilio del causante y tiene varios pasos (declaratoria de herederos, inventario, adjudicación). Un abogado del fuero puede acompañar todo el trámite. ${DISCLAIMER}`
-  ),
-  civil: make(
-    "lucia-ferrari",
-    `Es un tema civil. Un abogado civilista puede revisar tu caso, evaluar plazos y prescripción y proponer una estrategia. ${DISCLAIMER}`
-  ),
-  consumidor: make(
-    "lucia-ferrari",
-    `Suena a un caso de defensa del consumidor. Hay vías administrativas rápidas y también reclamo judicial con daño punitivo cuando corresponde. Un abogado del área puede orientarte. ${DISCLAIMER}`
-  ),
-  transito: make(
-    "lucia-ferrari",
-    `Parece un tema de tránsito o daños derivados de un siniestro vial. Es importante recopilar la documentación (constatación, denuncia, fotos, testigos) antes de reclamar. ${DISCLAIMER}`
-  ),
-};
-
-// Detección heurística amplia con vocabulario coloquial rioplatense.
-// En Fase 2 la reemplaza el clasificador del LLM.
-const PATTERNS: Array<[AreaKey, RegExp]> = [
-  [
-    "penal",
-    /(penal|delito|denuncia\s|denunciar|detenid|detenc|preso|imputad|imputac|amenaza|amenazad|robo|hurto|estafa|estafad|abuso|abusad|lesion|lesion(es|ad)|homicid|femicid|allanamiento|excarcelaci|libertad\s+condicional|fuerza\s+p[uú]blica|polic[ií]a|comisar[ií]a|fiscal[ií]a|proces(o|ad)|imputaci)/,
-  ],
-  [
-    "laboral",
-    /(despid|despedir|me\s+echaron|me\s+rajaron|liquidaci[oó]n|indemnizaci|laboral|trabajo\s+en\s+negro|art|aseguradora\s+de\s+riesgo|accidente\s+de\s+trabajo|aguinald|sueldo|no\s+me\s+pagan|no\s+cobro|horas\s+extra|joyner|patr[oó]n|jefe|convenio\s+colectivo|renuncia\s+forzada|acoso\s+laboral)/,
-  ],
-  [
-    "familia",
-    /(divorci|separaci[oó]n|mi\s+(ex|marido|esposa|mujer|pareja)|hij[oa]s?|alimentos|cuota\s+alimentaria|tenencia|custodia|r[eé]gimen\s+de\s+comunicaci|visitas|violencia\s+(familiar|de\s+g[eé]nero|dom[eé]stica)|denuncia\s+de\s+violencia|adopci|filiaci|paternidad|mediaci[oó]n\s+familiar)/,
-  ],
-  [
-    "sucesiones",
-    /(sucesi|herenc|hereder|testament|falleci[oó]|muri[oó]|inventario|declaratoria\s+de\s+hereder|bienes\s+de\s+mi|casa\s+de\s+mis?\s+padres|departamento\s+heredad)/,
-  ],
-  [
-    "consumidor",
-    /(consumidor|defensa\s+del\s+consumidor|producto\s+fallad|servicio\s+no\s+prestad|no\s+me\s+entregan|garant[ií]a|facturaci[oó]n\s+indebida|d[ée]bito\s+indebido|tel[eé]fono|internet\s+no\s+funciona|reclamo\s+a\s+(la\s+empresa|la\s+compa[nñ][ií]a)|banco|tarjeta|estafa\s+telef[oó]nica|no\s+me\s+devuelven)/,
-  ],
-  [
-    "transito",
-    /(tr[aá]nsito|choque|chocaron|siniestro\s+vial|accidente\s+de\s+tr[aá]nsito|multa|infracci[oó]n\s+de\s+tr[aá]nsito|licencia\s+de\s+conducir|constatac(i|iones))/,
-  ],
-  [
-    "civil",
-    /(civil|vecino|medianera|contrato|contract|reclamo|da[nñ]os|perjuicio|alquiler|inquilino|propietario|desalojo|deuda|mutuo|prescripci[oó]n)/,
-  ],
-];
-
-function detectArea(text: string): AreaKey | null {
-  const t = text.toLowerCase();
-  for (const [area, re] of PATTERNS) {
-    if (re.test(t)) return area;
-  }
-  return null;
-}
-
-const SUGGESTIONS: { label: string; text: string }[] = [
-  { label: "Me despidieron", text: "Me despidieron sin causa hace una semana." },
-  { label: "Consulta penal", text: "Un familiar quedó imputado en una causa penal." },
-  { label: "Quiero divorciarme", text: "Quiero iniciar un divorcio, tenemos hijos menores." },
-  { label: "Una sucesión", text: "Falleció un familiar y tenemos que iniciar la sucesión." },
-  { label: "Defensa del consumidor", text: "Una empresa me está facturando algo que no contraté." },
-];
 
 const WELCOME: Message = {
   role: "assistant",
   content:
-    "Hola. Soy el asistente legal de la red del Dr. Moix. Contame en pocas palabras qué te está pasando y te orienta con un profesional matriculado de Mar del Plata. Si querés, empezá tocando alguna de las sugerencias.",
+    "Hola. Soy el asistente del Estudio Moix Abogados. El estudio se dedica solo a derecho penal — contame en pocas palabras qué te está pasando y te digo si es un caso para nosotros. Si no lo es, te oriento igual.",
 };
+
+// Fallback local por si el backend está frío o falla el fetch.
+const FALLBACK_PENAL: Message = {
+  role: "assistant",
+  content:
+    "Por lo que contás, suena a una cuestión del fuero penal. El estudio te puede acompañar. Si querés, un abogado del equipo te contacta. " +
+    DISCLAIMER,
+  recommendations: [
+    {
+      slug: "cristian-moix",
+      full_name: "Dr. Cristian Moix",
+      headline: "Abogado penalista · Titular del Estudio Moix Abogados",
+      reason: "Estudio dedicado a derecho penal en Mar del Plata.",
+    },
+  ],
+  booking_cta: {
+    lawyer_slug: "cristian-moix",
+    href: "/abogados/cristian-moix#agendar",
+    label: "Agendar consulta",
+  },
+};
+
+const FALLBACK_NO_PENAL: Message = {
+  role: "assistant",
+  content:
+    "Te agradezco la consulta. El Estudio Moix Abogados se dedica solo a derecho penal, así que este caso no es para nosotros. Te conviene un abogado del fuero correspondiente — podés buscar uno matriculado en el CAMDP. " +
+    DISCLAIMER,
+};
+
+function fallbackLocal(text: string): Message {
+  const t = text.toLowerCase();
+  const penal = /(penal|delito|denuncia|detenid|preso|imputad|amenaza|robo|hurto|estafa|abus|lesion|homicid|allanamiento|excarcelaci|fiscal[ií]a|contravenci)/.test(
+    t,
+  );
+  if (penal) return FALLBACK_PENAL;
+  const otro = /(despid|laboral|trabajo|art|aguinald|sueldo|divorci|familia|alimentos|tenencia|custodia|violencia|sucesi|herenc|hereder|vecino|contrato|reclamo|da[nñ]os|consumidor|garant[ií]a|tr[aá]nsito|choque|multa|siniestro|administrativ|municipal)/.test(
+    t,
+  );
+  if (otro) return FALLBACK_NO_PENAL;
+  return {
+    role: "assistant",
+    content:
+      "Contame un poco más para poder orientarte. ¿Qué te está pasando? " +
+      DISCLAIMER,
+  };
+}
+
+const SUGGESTIONS: { label: string; text: string }[] = [
+  { label: "Estoy imputado", text: "Me llamaron de una fiscalía, estoy imputado en una causa penal." },
+  { label: "Detuvieron a un familiar", text: "Detuvieron a un familiar esta madrugada." },
+  { label: "Me estafaron", text: "Me estafaron una suma importante de plata, quiero hacer denuncia." },
+  { label: "Me despidieron", text: "Me despidieron sin causa hace una semana." },
+  { label: "Un tema de familia", text: "Estoy iniciando un divorcio, tenemos hijos menores." },
+];
 
 export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([WELCOME]);
@@ -175,16 +96,27 @@ export function ChatWidget() {
     if (!clean || pending) return;
     setInput("");
     setSuggestionsUsed(true);
-    setMessages((m) => [...m, { role: "user", content: clean }]);
+
+    const newHistory: Message[] = [...messages, { role: "user", content: clean }];
+    setMessages(newHistory);
     setPending(true);
 
-    // 1) intento con el backend real (Gemini si la key está seteada, si no
-    //    la heurística del propio chatbot). 2) si falla el fetch, uso mock local.
+    // El history que le mandamos al backend NO incluye el mensaje actual
+    // (va aparte como `question`); incluye el welcome + turnos previos.
+    const historyForBackend = newHistory
+      .slice(0, -1)
+      .slice(-20) // límite defensivo
+      .map((m) => ({ role: m.role, content: m.content }));
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ session_id: "web-demo", question: clean }),
+        body: JSON.stringify({
+          session_id: "web-demo",
+          question: clean,
+          history: historyForBackend,
+        }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
@@ -198,19 +130,7 @@ export function ChatWidget() {
         },
       ]);
     } catch (_err) {
-      const area = detectArea(clean);
-      if (area) {
-        setMessages((m) => [...m, ANSWERS[area]]);
-      } else {
-        setMessages((m) => [
-          ...m,
-          {
-            role: "assistant",
-            content:
-              `Contame un poco más para poder orientarte. Por ejemplo: ¿es algo que pasó en el trabajo, en tu familia, con un vecino o comercio, un tema de tránsito, o una situación con la policía o la justicia penal? Cuanto más detalle, mejor. ${DISCLAIMER}`,
-          },
-        ]);
-      }
+      setMessages((m) => [...m, fallbackLocal(clean)]);
     } finally {
       setPending(false);
     }
@@ -227,20 +147,21 @@ export function ChatWidget() {
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span className="text-sm font-medium text-ink">Asistente legal · en línea</span>
+            <span className="text-sm font-medium text-ink">Asistente del estudio · en línea</span>
           </div>
           <span className="inline-flex items-center gap-1 rounded-full border border-gold/60 bg-gold/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink/70">
             <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-            Demo
+            IA · Demo
           </span>
         </div>
         <p className="text-xs text-ink/60 mt-0.5">
-          Español rioplatense · Mar del Plata · <span className="text-ink/50">respuestas de ejemplo</span>
+          Estudio Moix Abogados · Derecho penal · Mar del Plata
         </p>
       </header>
       <div className="px-4 py-2 border-b border-ink/10 bg-gold/5 text-[11px] text-ink/70 leading-snug">
-        <strong className="text-ink">Demo funcional.</strong> Reconoce el área de tu consulta y
-        te sugiere un abogado de la red. En Fase 2 lo reemplaza un asistente con IA real (Gemini o Claude).
+        <strong className="text-ink">IA real conectada.</strong> El asistente decide si tu caso es
+        penal (lo tomamos) o de otra área (te orientamos hacia el fuero correcto).
+        Si duda, pregunta antes de decidir.
       </div>
 
       <div ref={boxRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gradient-to-b from-paper to-paper-warm">
@@ -292,7 +213,6 @@ export function ChatWidget() {
           ))}
         </AnimatePresence>
 
-        {/* Chips de sugerencias — solo en el primer mensaje, hasta que el usuario escriba algo */}
         {!suggestionsUsed && (
           <div className="pt-1 flex flex-wrap gap-2">
             {SUGGESTIONS.map((s) => (

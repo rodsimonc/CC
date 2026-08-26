@@ -2,6 +2,17 @@
 
 Sigue [SemVer](https://semver.org/lang/es/). Los cambios más recientes van arriba.
 
+## [0.2.0] - 2026-08-25
+
+### Cambio de alcance
+- El proyecto pivota de "directorio/marketplace de la red del Dr. Moix" a **sitio institucional del Estudio Moix Abogados**, que se dedica exclusivamente a derecho penal.
+- El asistente virtual pasa a ser **filtro por área**: si el caso es penal, deriva al estudio; si no, orienta al consultante hacia el fuero correspondiente.
+- Se agregan las páginas `/mi-caso` (portal del cliente, vista previa Fase 3) y se reescribe `/admin` como **Panel del estudio** (vista previa Fase 2).
+- El chat pide **historial de conversación** para poder repreguntar en casos ambiguos con memoria.
+- El chatbot suma un "manual" concreto de qué es penal y qué no, con listado de ejemplos y zona gris. Cuando duda, pregunta antes de derivar.
+- El campo `is_criminal` guía la derivación del backend. Nuevo `confidence` = `low` para preguntas de aclaración (no recomienda ni ofrece agenda hasta tener seguridad).
+- Sacamos del catálogo a Ana Benítez, Martín Losada y Lucía Ferrari (no eran del estudio). Solo queda Cristian Moix + placeholders del equipo hasta que cada integrante se sume.
+
 ## [0.1.1] - 2026-08-24
 
 ### Agregado

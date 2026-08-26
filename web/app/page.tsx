@@ -1,31 +1,67 @@
 import Link from "next/link";
 import { ChatWidget } from "../components/ChatWidget";
-import { LawyerCard } from "../components/LawyerCard";
-import { DEMO_LAWYERS } from "../lib/demo-lawyers";
-
-const AREAS = [
-  { key: "penal", label: "Penal", desc: "Denuncias, defensa, medidas urgentes." },
-  { key: "laboral", label: "Laboral", desc: "Despidos, ART, reclamos." },
-  { key: "familia", label: "Familia", desc: "Divorcio, alimentos, tenencia." },
-  { key: "civil", label: "Civil", desc: "Contratos, vecinos, daños." },
-  { key: "sucesiones", label: "Sucesiones", desc: "Herencias, testamentos." },
-  { key: "comercial", label: "Comercial", desc: "Sociedades, quiebras, concursos." },
-  { key: "consumidor", label: "Consumidor", desc: "Defensa del consumidor." },
-  { key: "administrativo", label: "Administrativo", desc: "Multas, trámites municipales." },
-];
+import { DEMO_LAWYERS, TEAM_PLACEHOLDERS } from "../lib/demo-lawyers";
 
 const STEPS = [
-  { n: "1", title: "Contá qué te pasa", desc: "En el chat, en tus propias palabras. Sin formularios interminables." },
-  { n: "2", title: "Recibí una recomendación", desc: "Te sugerimos 1 a 3 abogados de la red del Dr. Moix según tu caso." },
-  { n: "3", title: "Agendá la consulta", desc: "Elegís horario y te contactamos por email o WhatsApp." },
+  {
+    n: "1",
+    title: "Contá qué te pasa",
+    desc:
+      "En el chat, en tus propias palabras. El asistente entiende y no juzga.",
+  },
+  {
+    n: "2",
+    title: "Evaluamos si es un caso penal",
+    desc:
+      "Nuestro estudio se dedica solo a derecho penal. Si tu caso es de otra área, te orientamos hacia el fuero adecuado.",
+  },
+  {
+    n: "3",
+    title: "Te contactamos",
+    desc:
+      "Si el caso es para nosotros, un abogado del equipo te llama o te agenda una consulta.",
+  },
+];
+
+const AREAS = [
+  {
+    title: "Defensa penal",
+    desc: "Imputaciones, detenciones, medidas cautelares, juicio oral.",
+  },
+  {
+    title: "Recursos y apelaciones",
+    desc: "Planteos ante la Cámara de Apelación y Garantías en lo Penal de MdP.",
+  },
+  {
+    title: "Casos económicos y patrimoniales",
+    desc: "Defensa en causas por estafa, administración fraudulenta y afines.",
+  },
+  {
+    title: "Contravenciones",
+    desc: "Actuación en el fuero contravencional de la provincia de Buenos Aires.",
+  },
 ];
 
 const FAQ = [
-  { q: "¿Cuánto sale la consulta?", a: "Depende del abogado y el tema. Muchos ofrecen una primera consulta orientativa sin cargo. Lo confirmamos antes de agendar." },
-  { q: "¿Cómo eligen a los abogados de la red?", a: "Verificamos matrícula activa en el CAMDP y trayectoria pública. Todos los perfiles se publican con consentimiento del profesional." },
-  { q: "¿Mis datos quedan expuestos?", a: "No. Cumplimos la Ley 25.326 y sólo compartimos tu consulta con el abogado que elijas. Podés pedir la baja en cualquier momento." },
-  { q: "¿Y si mi tema no aparece en la lista?", a: "Contalo igual en el chat. Si tenemos un profesional adecuado te lo derivamos, y si no, te lo decimos con franqueza." },
+  {
+    q: "¿El estudio atiende otros temas además de penal?",
+    a: "No. El Estudio Moix Abogados se dedica exclusivamente a derecho penal. Si tu caso es de otra área, el asistente te orienta hacia el fuero correspondiente y te sugiere buscar un abogado en el CAMDP.",
+  },
+  {
+    q: "¿La primera consulta tiene costo?",
+    a: "La orientación inicial por el chat es sin cargo. El costo de honorarios profesionales se conversa con el abogado del equipo antes de tomar el caso.",
+  },
+  {
+    q: "¿Cómo protegen mis datos?",
+    a: "Cumplimos la Ley 25.326 de Protección de Datos Personales. Los datos que compartas solo se usan para tu consulta y no se ceden a terceros.",
+  },
+  {
+    q: "¿Puedo agendar directo sin usar el chat?",
+    a: "Sí. Podés escribir al mail del estudio o pedir una consulta desde el perfil del Dr. Moix.",
+  },
 ];
+
+const moix = DEMO_LAWYERS[0];
 
 export default function HomePage() {
   return (
@@ -35,28 +71,34 @@ export default function HomePage() {
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-paper via-paper-warm to-paper" />
         <div className="container-narrow pt-16 md:pt-20 pb-12 grid gap-10 md:grid-cols-2 items-center">
           <div>
-            <p className="text-xs uppercase tracking-widest text-ink/50">
-              Red del Dr. Cristian Moix · Mar del Plata
+            <p className="text-xs uppercase tracking-[0.2em] text-ink/50">
+              Mar del Plata · Derecho penal
             </p>
             <h1 className="mt-3 font-serif text-4xl md:text-5xl leading-tight text-ink">
-              Encontrá al abogado indicado en dos minutos.
+              Estudio Moix Abogados
             </h1>
             <p className="mt-4 text-lg text-ink/70 max-w-prose">
-              Contale tu problema al asistente. Te orientamos y te conectamos con un
-              profesional matriculado de la red del Dr. Moix. Sin vueltas, sin formularios largos.
+              Defensa penal en el Departamento Judicial Mar del Plata. Un equipo
+              dedicado únicamente al fuero penal, con actuación regular en
+              instancias de juicio y apelación.
+            </p>
+            <p className="mt-3 text-sm text-ink/60 max-w-prose">
+              Escribí abajo, contale al asistente qué te pasa y te decimos si es
+              un caso para nosotros. Si no lo es, te orientamos igual sobre qué
+              tipo de abogado necesitás.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="#abogados"
+                href="/abogados/cristian-moix"
                 className="rounded-lg border border-ink/20 px-5 py-2.5 text-sm text-ink hover:bg-ink hover:text-paper transition"
               >
-                Ver abogados
+                Conocer al Dr. Moix
               </Link>
               <Link
-                href="#moix"
+                href="#equipo"
                 className="rounded-lg bg-gold px-5 py-2.5 text-sm font-medium text-ink hover:bg-gold-soft transition"
               >
-                Conocer al Dr. Moix
+                El equipo
               </Link>
             </div>
           </div>
@@ -69,7 +111,7 @@ export default function HomePage() {
       {/* PASOS */}
       <section className="py-16 border-t border-ink/10">
         <div className="container-narrow">
-          <h2 className="font-serif text-3xl text-ink">Cómo funciona</h2>
+          <h2 className="font-serif text-3xl text-ink">Cómo trabajamos</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {STEPS.map((s) => (
               <div key={s.n} className="rounded-2xl border border-ink/10 bg-paper p-6">
@@ -84,35 +126,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* AREAS */}
-      <section className="py-16 bg-paper-warm border-t border-ink/10">
-        <div className="container-narrow">
-          <h2 className="font-serif text-3xl text-ink">Áreas de práctica</h2>
-          <p className="mt-2 text-ink/70">Cobrimos los fueros más consultados en Mar del Plata.</p>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-            {AREAS.map((a) => (
-              <div key={a.key} className="rounded-xl border border-ink/10 bg-paper p-4">
-                <p className="font-serif text-lg text-ink">{a.label}</p>
-                <p className="text-sm text-ink/60 mt-1">{a.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* MOIX */}
-      <section id="moix" className="py-16 border-t border-ink/10">
+      {/* MOIX + ESTUDIO */}
+      <section id="moix" className="py-16 bg-paper-warm border-t border-ink/10">
         <div className="container-narrow grid gap-8 md:grid-cols-[220px_1fr] items-start">
           <div className="mx-auto md:mx-0 h-48 w-48 rounded-full bg-ink/5 grid place-items-center text-5xl font-serif text-ink/50 border border-ink/10">
             CM
           </div>
           <div>
-            <p className="text-xs uppercase tracking-widest text-ink/50">Referente de la red</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-ink/50">Titular del estudio</p>
             <h2 className="font-serif text-3xl md:text-4xl text-ink mt-2">Dr. Cristian Moix</h2>
             <p className="mt-3 text-ink/70 max-w-prose">
-              Abogado penalista con más de 25 años de trayectoria en Mar del Plata. Ex rector universitario
-              y docente titular de Derecho Penal. Referente en la orientación de casos de complejidad y
-              en la formación de generaciones de abogados de la ciudad.
+              Fundador y titular del estudio. Su práctica se centra en causas de
+              complejidad ante los tribunales del fuero penal bonaerense, con
+              actuación regular en instancias de apelación.
             </p>
             <div className="mt-5">
               <Link
@@ -126,14 +152,64 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* RED */}
-      <section id="abogados" className="py-16 bg-paper-warm border-t border-ink/10">
+      {/* EQUIPO */}
+      <section id="equipo" className="py-16 border-t border-ink/10">
         <div className="container-narrow">
-          <h2 className="font-serif text-3xl text-ink">La red</h2>
-          <p className="mt-2 text-ink/70">Profesionales matriculados en el CAMDP.</p>
+          <h2 className="font-serif text-3xl text-ink">El equipo del estudio</h2>
+          <p className="mt-2 text-ink/70 max-w-2xl">
+            Todos los integrantes son abogados dedicados a derecho penal en el
+            Departamento Judicial Mar del Plata.
+          </p>
           <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {DEMO_LAWYERS.filter((l) => l.slug !== "cristian-moix").map((l) => (
-              <LawyerCard key={l.slug} lawyer={l} />
+            <Link
+              href={`/abogados/${moix.slug}`}
+              className="group block rounded-2xl border border-ink/10 bg-paper p-5 hover:shadow-soft transition"
+            >
+              <p className="text-xs uppercase tracking-[0.2em] text-ink/50">Titular</p>
+              <h3 className="mt-2 font-serif text-xl text-ink group-hover:text-ink-soft">
+                {moix.full_name}
+              </h3>
+              {moix.headline && <p className="text-sm text-ink/70 mt-1">{moix.headline}</p>}
+              <span className="mt-3 inline-block text-xs text-ink/50 underline underline-offset-2">
+                Ver perfil ↗
+              </span>
+            </Link>
+
+            {TEAM_PLACEHOLDERS.map((m, i) => (
+              <div
+                key={i}
+                className="rounded-2xl border border-dashed border-ink/20 bg-paper/60 p-5"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs uppercase tracking-[0.2em] text-ink/40">Integrante</p>
+                  <span className="inline-flex items-center gap-1 rounded-full border border-gold/60 bg-gold/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink/70">
+                    <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+                    Vista previa · Fase 2
+                  </span>
+                </div>
+                <h3 className="mt-2 font-serif text-xl text-ink/70">{m.role}</h3>
+                <p className="text-sm text-ink/60 mt-1">{m.note}</p>
+                <p className="mt-3 text-xs text-ink/50">
+                  El perfil se completa cuando el propio abogado se sume al panel
+                  privado del estudio.
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ÁREAS */}
+      <section className="py-16 bg-paper-warm border-t border-ink/10">
+        <div className="container-narrow">
+          <h2 className="font-serif text-3xl text-ink">Áreas de trabajo</h2>
+          <p className="mt-2 text-ink/70">Ejercemos exclusivamente en derecho penal.</p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            {AREAS.map((a) => (
+              <div key={a.title} className="rounded-2xl border border-ink/10 bg-paper p-5">
+                <p className="font-serif text-lg text-ink">{a.title}</p>
+                <p className="text-sm text-ink/70 mt-1">{a.desc}</p>
+              </div>
             ))}
           </div>
         </div>
@@ -157,11 +233,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ROADMAP — el proyecto en 3 fases + el producto final */}
+      {/* ROADMAP — pensado para explicarle al Dr. Moix qué sigue */}
       <section id="roadmap" className="py-16 bg-paper-warm border-t border-ink/10">
         <div className="container-narrow">
           <div className="flex items-center gap-3 flex-wrap">
-            <p className="text-xs uppercase tracking-widest text-ink/50">Roadmap</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-ink/50">Roadmap</p>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/60 bg-gold/10 px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wide text-ink/70">
               <span className="h-1.5 w-1.5 rounded-full bg-gold" />
               3 fases
@@ -169,9 +245,8 @@ export default function HomePage() {
           </div>
           <h2 className="mt-2 font-serif text-3xl text-ink">El proyecto en tres fases</h2>
           <p className="mt-2 text-ink/70 max-w-2xl">
-            Un plan por etapas para que puedas ver resultados desde el primer día
-            y decidir con evidencia cada avance. La estética, el flujo y los
-            criterios de cumplimiento se mantienen en toda la evolución.
+            Se entrega por etapas para que vean resultados desde el primer día y
+            decidan cada avance con evidencia.
           </p>
 
           <div className="mt-8 grid gap-5 md:grid-cols-3">
@@ -179,30 +254,29 @@ export default function HomePage() {
               <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-emerald-800">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> En vivo
               </span>
-              <p className="text-xs uppercase tracking-widest text-emerald-700">Fase 1 · MVP visual</p>
-              <h3 className="mt-2 font-serif text-xl text-ink">Lo que ya ves funcionando</h3>
+              <p className="text-xs uppercase tracking-[0.2em] text-emerald-700">Fase 1 · Sitio institucional</p>
+              <h3 className="mt-2 font-serif text-xl text-ink">Lo que ya está</h3>
               <ul className="mt-3 space-y-2 text-sm text-ink/75">
-                <li>· Landing profesional con chatbot embebido.</li>
-                <li>· Red de abogados con perfil individual navegable.</li>
-                <li>· Chat con clasificación de área y recomendación demo.</li>
-                <li>· Calendario de agenda (mockup) por profesional.</li>
-                <li>· Panel de administración (vista previa).</li>
-                <li>· Backend REST + servicio de IA listos para conectar datos reales.</li>
+                <li>· Landing profesional del estudio.</li>
+                <li>· Chat con IA real que filtra por área.</li>
+                <li>· Perfil del titular y del equipo (placeholder).</li>
+                <li>· Áreas de trabajo y FAQ.</li>
+                <li>· Base técnica lista para portales.</li>
               </ul>
             </div>
 
             <div className="rounded-2xl border border-gold/50 bg-paper p-6 relative">
               <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full border border-gold/60 bg-gold/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink/70">
-                <span className="h-1.5 w-1.5 rounded-full bg-gold" /> ~3 semanas
+                <span className="h-1.5 w-1.5 rounded-full bg-gold" /> ~4 semanas
               </span>
-              <p className="text-xs uppercase tracking-widest text-gold">Fase 2 · Producto real</p>
-              <h3 className="mt-2 font-serif text-xl text-ink">Lo que se conecta a la realidad</h3>
+              <p className="text-xs uppercase tracking-[0.2em] text-gold">Fase 2 · Portal del estudio</p>
+              <h3 className="mt-2 font-serif text-xl text-ink">El backoffice</h3>
               <ul className="mt-3 space-y-2 text-sm text-ink/75">
-                <li>· <strong>Chatbot con IA real</strong> (Gemini/Claude) que conversa, clasifica el área y deriva con razones claras.</li>
-                <li>· <strong>Agenda con Cal.com</strong> por abogado, con confirmación por email (Resend) y WhatsApp (Twilio).</li>
-                <li>· <strong>Base de datos en producción</strong> (Postgres) para leads, turnos y perfiles.</li>
-                <li>· <strong>Autenticación completa</strong> con alta guiada y consentimiento del abogado (Ley 25.326).</li>
-                <li>· <strong>Verificación de matrícula</strong> en el padrón del CAMDP al momento de sumar cada abogado.</li>
+                <li>· Usuarios y perfiles para cada abogado del equipo.</li>
+                <li>· Casos activos, documentación, notas internas.</li>
+                <li>· Alta de leads del chat con un click.</li>
+                <li>· Agenda con Cal.com + notificaciones (email + WhatsApp).</li>
+                <li>· Cada abogado edita su perfil público.</li>
               </ul>
             </div>
 
@@ -210,106 +284,37 @@ export default function HomePage() {
               <span className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full border border-ink/20 bg-ink/5 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-ink/60">
                 ~4 semanas
               </span>
-              <p className="text-xs uppercase tracking-widest text-ink/60">Fase 3 · Escala y gobierno</p>
-              <h3 className="mt-2 font-serif text-xl text-ink">Lo que hace crecer la red</h3>
+              <p className="text-xs uppercase tracking-[0.2em] text-ink/60">Fase 3 · Portal del cliente</p>
+              <h3 className="mt-2 font-serif text-xl text-ink">Para quien contrata al estudio</h3>
               <ul className="mt-3 space-y-2 text-sm text-ink/75">
-                <li>· <strong>Panel por rol</strong>: cada abogado edita su perfil y carga sus casos representativos (anonimizados).</li>
-                <li>· Cada abogado ve sus <strong>leads y turnos</strong> propios.</li>
-                <li>· <strong>Vista del Dr. Moix</strong> sobre toda la red con métricas de derivación y conversión.</li>
-                <li>· Tracking "referido por Moix" en cada lead para trazabilidad total.</li>
-                <li>· Reportes mensuales automáticos por email y exportación (CSV).</li>
-                <li>· Indexación automática de menciones en <strong>prensa local</strong> (La Capital MdP, Infobrisas) por perfil.</li>
+                <li>· Cada cliente entra a un espacio privado por su caso.</li>
+                <li>· Ve el avance, próximos pasos y audiencias.</li>
+                <li>· Recibe notificaciones cuando hay novedades.</li>
+                <li>· Sube y firma documentos (firma electrónica).</li>
+                <li>· Asistente IA interno para preguntas frecuentes del caso.</li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-6 rounded-2xl border border-ink/10 bg-paper/60 p-5 text-sm text-ink/70">
-            <p className="text-xs uppercase tracking-widest text-ink/50">Qué no promete el proyecto</p>
-            <p className="mt-2 leading-relaxed">
-              El sitio <strong>no</strong> extrae expedientes del sistema MEV de
-              la SCBA (requiere credenciales personales y el fuero penal está
-              restringido), <strong>no</strong> replica el CIJ (discontinuado en
-              mayo 2025) y <strong>no</strong> reemplaza al padrón oficial. La
-              estadística judicial que quiera mostrarse en un perfil la carga el
-              propio abogado, con el respaldo que decida (capturas, exportaciones
-              propias de MEV, etc.).
+          {/* Modelo replicable */}
+          <div className="mt-8 rounded-2xl border border-ink/10 bg-paper p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-ink/50">Modelo replicable</p>
+            <h3 className="mt-2 font-serif text-2xl text-ink">
+              Al terminar, el estudio queda con una plataforma propia
+            </h3>
+            <p className="mt-2 text-ink/75 max-w-3xl">
+              El mismo modelo —sitio institucional con IA de filtro, portal
+              del estudio y portal del cliente— se puede ofrecer a otros
+              estudios como servicio. El Estudio Moix queda con la referencia
+              probada y la posibilidad de sumar honorarios recurrentes por
+              referirlo.
             </p>
           </div>
 
-          {/* El producto final — pensado para explicar al abogado que recibe el sitio */}
-          <div className="mt-12 rounded-3xl border border-ink/10 bg-ink text-paper p-8 md:p-10">
-            <p className="text-xs uppercase tracking-widest text-gold">Cierre · el producto final</p>
-            <h3 className="mt-2 font-serif text-3xl">Cómo queda tu sitio al terminar las tres fases</h3>
-            <p className="mt-3 text-paper/80 max-w-3xl">
-              Un directorio legal marplatense con el Dr. Moix como figura central y
-              una red curada de profesionales matriculados en el CAMDP, atendido
-              24/7 por un asistente inteligente que orienta al consultante y lo
-              lleva hasta la agenda del abogado adecuado.
-            </p>
-
-            <div className="mt-8 grid gap-6 md:grid-cols-3">
-              <div>
-                <p className="font-serif text-lg text-gold">Para el consultante</p>
-                <ul className="mt-2 space-y-1.5 text-sm text-paper/80">
-                  <li>· Explica su problema en lenguaje coloquial.</li>
-                  <li>· Recibe 1 a 3 recomendaciones fundamentadas.</li>
-                  <li>· Agenda su consulta en dos clicks.</li>
-                  <li>· Confirmación por email o WhatsApp.</li>
-                </ul>
-              </div>
-              <div>
-                <p className="font-serif text-lg text-gold">Para cada abogado</p>
-                <ul className="mt-2 space-y-1.5 text-sm text-paper/80">
-                  <li>· Perfil profesional editorial, con matrícula verificada en el CAMDP.</li>
-                  <li>· Menciones en medios indexadas automáticamente.</li>
-                  <li>· Sección de casos representativos cargada por él mismo.</li>
-                  <li>· Calendario propio integrado (Cal.com).</li>
-                  <li>· Panel privado con sus leads y turnos.</li>
-                </ul>
-              </div>
-              <div>
-                <p className="font-serif text-lg text-gold">Para el Dr. Moix</p>
-                <ul className="mt-2 space-y-1.5 text-sm text-paper/80">
-                  <li>· Vista integral de la red y su actividad.</li>
-                  <li>· Cada lead trazado como "referido por Moix".</li>
-                  <li>· Métricas de derivación y conversión.</li>
-                  <li>· Reportes mensuales listos para leer.</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-8 grid gap-6 md:grid-cols-2 border-t border-paper/15 pt-8">
-              <div>
-                <p className="font-serif text-lg text-gold">Cumplimiento sin sorpresas</p>
-                <ul className="mt-2 space-y-1.5 text-sm text-paper/80">
-                  <li>· <strong>Ley 25.326</strong> de Protección de Datos Personales aplicada por diseño.</li>
-                  <li>· Reglas del <strong>CAMDP</strong> sobre publicidad y derivación respetadas en todo el flujo.</li>
-                  <li>· Consentimiento explícito de cada abogado antes de publicar.</li>
-                  <li>· Opt-out visible en todo perfil y baja en 48 h hábiles.</li>
-                </ul>
-              </div>
-              <div>
-                <p className="font-serif text-lg text-gold">Sin ataduras</p>
-                <ul className="mt-2 space-y-1.5 text-sm text-paper/80">
-                  <li>· Código propio, sin dependencias de plataformas cerradas.</li>
-                  <li>· Base de datos exportable en cualquier momento.</li>
-                  <li>· Deploy en la nube con costo mensual controlado.</li>
-                  <li>· Documentación técnica completa entregada al final.</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-8 flex flex-wrap gap-3 border-t border-paper/15 pt-6 text-sm text-paper/70">
-              <span className="rounded-full bg-paper/10 px-3 py-1">Tiempo total estimado: ~7 semanas</span>
-              <span className="rounded-full bg-paper/10 px-3 py-1">Sitio en vivo desde la Fase 1</span>
-              <span className="rounded-full bg-paper/10 px-3 py-1">Iteraciones semanales con el Dr. Moix</span>
-            </div>
-          </div>
-
-          <p className="mt-8 text-xs text-ink/50">
-            Los tiempos son estimativos y se ajustan según la disponibilidad de
-            datos (verificación en el padrón del CAMDP, consentimientos, integraciones
-            con Cal.com, Resend y Twilio).
+          <p className="mt-8 text-xs text-ink/50 max-w-3xl">
+            Todos los desarrollos siguen la Ley 25.326 (Protección de Datos
+            Personales) y las reglas del CAMDP sobre publicidad y ejercicio
+            profesional.
           </p>
         </div>
       </section>
@@ -318,24 +323,26 @@ export default function HomePage() {
       <footer className="border-t border-ink/10 py-10 bg-paper-warm">
         <div className="container-narrow text-sm text-ink/60 grid gap-4 md:grid-cols-3">
           <div>
-            <p className="font-serif text-lg text-ink">Moix Legal</p>
+            <p className="font-serif text-lg text-ink">Estudio Moix Abogados</p>
             <p className="mt-1">Mar del Plata, Buenos Aires — Argentina.</p>
-            <p className="mt-1">contacto@moixlegal.com.ar</p>
+            <p className="mt-1">contacto@moixabogados.com.ar</p>
           </div>
           <div>
-            <p className="uppercase tracking-widest text-xs text-ink/50">Sitio</p>
+            <p className="uppercase tracking-[0.2em] text-xs text-ink/50">Sitio</p>
             <ul className="mt-2 space-y-1">
-              <li><Link href="#abogados">Abogados</Link></li>
+              <li><Link href="#equipo">El equipo</Link></li>
               <li><Link href="#moix">Dr. Moix</Link></li>
               <li><Link href="#roadmap">Roadmap</Link></li>
-              <li><Link href="/admin">Panel (preview)</Link></li>
+              <li><Link href="/mi-caso">Portal cliente (preview)</Link></li>
+              <li><Link href="/admin">Panel del estudio (preview)</Link></li>
             </ul>
           </div>
           <div>
-            <p className="uppercase tracking-widest text-xs text-ink/50">Aviso</p>
+            <p className="uppercase tracking-[0.2em] text-xs text-ink/50">Aviso</p>
             <p className="mt-2 text-xs">
-              Este sitio no constituye asesoramiento legal. La información brindada es
-              orientativa y no reemplaza la consulta con un profesional matriculado.
+              Este sitio no constituye asesoramiento legal. La información
+              brindada por el asistente es orientativa y no reemplaza la
+              consulta con un profesional matriculado.
             </p>
           </div>
         </div>

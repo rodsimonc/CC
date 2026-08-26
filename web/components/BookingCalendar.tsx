@@ -39,7 +39,7 @@ export function BookingCalendar({ lawyerSlug }: { lawyerSlug: string }) {
         {selected ? `Confirmar ${selected}` : "Elegí un horario primero"}
       </button>
       <p className="mt-3 text-[11px] text-ink/50">
-        Al confirmar te contactamos por email o WhatsApp desde la red del Dr. Moix.
+        Al confirmar te contactamos por email o WhatsApp desde el Estudio Moix Abogados.
       </p>
       <input type="hidden" value={lawyerSlug} readOnly />
     </div>

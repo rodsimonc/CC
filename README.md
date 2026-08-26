@@ -1,21 +1,25 @@
-# Moix Legal
+# Estudio Moix Abogados — Sitio institucional
 
-Directorio y marketplace legal para Mar del Plata, con chatbot IA que orienta al consultante y lo deriva a un abogado de la red del Dr. Cristian Moix.
+Sitio propio del **Estudio Moix Abogados** (Mar del Plata), un estudio dedicado exclusivamente a **derecho penal**. La landing lleva un asistente virtual con IA que hace el filtro inicial: si el caso es penal, deriva al estudio; si es de otra área, orienta al consultante hacia el fuero correspondiente.
 
-## Qué es
+Sobre esta base el proyecto crece en dos portales privados: uno para el equipo del estudio (panel del estudio) y otro para cada cliente (mi caso).
 
-Un cliente entra al sitio con un problema legal, conversa con un chatbot que entiende su situación, recibe una recomendación fundamentada de 1 a 3 abogados según especialidad y antecedentes públicos, y puede agendar una consulta directa. Cada lead queda registrado con la trazabilidad "referido por Moix".
+## Fases
 
-La figura del Dr. Moix (penalista, ex rector, docente universitario) opera como ancla de autoridad. Alrededor se organiza una red curada de abogados con perfiles armados a partir de fuentes públicas verificadas (padrón del CAMDP, MEV de la SCBA, CIJ, SAIJ, prensa local).
+- **Fase 1 — En vivo.** Landing institucional, chat con IA real (filtro por área), perfil del titular y placeholders del equipo, áreas de trabajo, FAQ, base técnica lista.
+- **Fase 2 — Portal del estudio.** Usuarios y perfiles para cada abogado, casos activos con documentación, notas internas, alta de leads del chat con un click, agenda con Cal.com, notificaciones (email + WhatsApp), edición del perfil público por parte de cada abogado.
+- **Fase 3 — Portal del cliente.** Cada cliente entra a un espacio privado por caso: avance, próximos pasos, notificaciones, firma electrónica de documentos y asistente IA interno para preguntas contextuales sobre su causa.
+
+Al terminar, el mismo modelo puede ofrecerse como servicio a otros estudios.
 
 ## Arquitectura
 
 ```
 moix-legal/
 ├── api/         # Backend REST — Node.js + Express + SQLite/Postgres
-├── chatbot/     # Servicio RAG — Python + FastAPI + LangChain + FAISS
-├── web/         # Frontend público — Next.js 14 + TypeScript + Tailwind
-├── scrapers/    # Jobs de datos públicos — Python + Playwright
+├── chatbot/     # Servicio de IA — Python + FastAPI + Gemini (fallback heurístico)
+├── web/         # Frontend público + portales — Next.js 14 + TypeScript + Tailwind
+├── scrapers/    # Jobs de datos públicos (padrón CAMDP + prensa local)
 └── docs/        # Documentación transversal
 ```
 
@@ -23,14 +27,11 @@ Cuatro servicios independientes, desplegables por separado.
 
 ```mermaid
 flowchart LR
-    U[Usuario] -->|HTTPS| W[web · Next.js]
-    W -->|REST| A[api · Express]
-    W -->|proxy /chat| A
-    A -->|POST /api/chat| C[chatbot · FastAPI]
-    C -->|retriever| F[(FAISS index)]
-    S[scrapers] -->|public_data| DB[(SQLite / Postgres)]
-    A --> DB
-    C -->|lawyers.jsonl| DB
+    U[Consultante] -->|HTTPS| W[web · Next.js]
+    W -->|/api/chat proxy| A[api · Express]
+    A -->|/api/chat| C[chatbot · FastAPI + Gemini]
+    A --> DB[(SQLite / Postgres)]
+    S[scrapers] -->|padrón / prensa| A
     A -->|email| R[Resend]
     A -->|WhatsApp| T[Twilio]
     A -->|slots| CAL[Cal.com]
@@ -38,7 +39,7 @@ flowchart LR
 
 ## Puesta en marcha rápida (desarrollo local)
 
-Requisitos: Node.js 20, Python 3.11, npm o pnpm, git.
+Requisitos: Node.js 20, Python 3.11, npm, git.
 
 ```bash
 # 1) API REST
@@ -48,12 +49,12 @@ npm install
 npm run seed
 npm run dev            # http://localhost:4000
 
-# 2) Chatbot RAG
+# 2) Chatbot (Gemini)
 cd ../chatbot
 python -m venv .venv
 source .venv/bin/activate    # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env
+cp .env.example .env         # Setear GOOGLE_API_KEY
 uvicorn app.server:app --reload --port 8000
 
 # 3) Frontend
@@ -62,13 +63,6 @@ cp .env.example .env.local
 npm install
 npm run dev            # http://localhost:3000
 ```
-
-## Deploy rápido a Render
-
-En la raíz hay un `render.yaml` (blueprint). Desde https://dashboard.render.com/ →
-**New → Blueprint → conectar `rodsimonc/CC`** se crean los tres servicios
-(`moix-legal-api`, `moix-legal-chatbot`, `moix-legal`) en el plan free.
-Paso a paso y cableado de URLs cruzadas en `docs/DEPLOY-RENDER.md`.
 
 ## Documentación
 
@@ -82,10 +76,4 @@ Paso a paso y cableado de URLs cruzadas en `docs/DEPLOY-RENDER.md`.
 
 ## Estado
 
-Fase 1 (actual): MVP visual. Landing con chatbot mock, API con CRUD básico y seed, servicio RAG con endpoint eco, docs esqueleto.
-
-Fase 2: chatbot con IA real (Gemini/Claude), agenda con Cal.com, notificaciones por email y WhatsApp, base de datos en producción y autenticación completa.
-
-Fase 3: panel por rol (cada abogado edita su perfil y ve sus leads), vista del Dr. Moix sobre la red, tracking "referido por Moix", reportes mensuales, indexación automática de menciones en prensa local.
-
-Fuentes descartadas del brief inicial (por inviabilidad técnica o legal, documentado en `docs/LEGAL-COMPLIANCE.md`): scraping directo del MEV SCBA, CIJ (discontinuado en mayo 2025) y SAIJ automático. La estadística judicial que quiera mostrar un abogado la carga desde su panel privado.
+Fase 1 en vivo: landing del estudio + chat con IA real (Gemini). Fase 2 y 3 arrancan cuando el estudio confirme el pivot.

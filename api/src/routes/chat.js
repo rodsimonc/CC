@@ -10,6 +10,15 @@ const BASE = 'https://moixlegal.com.ar/errors';
 const chatSchema = z.object({
   session_id: z.string().min(1).max(80),
   question: z.string().min(1).max(2000),
+  history: z
+    .array(
+      z.object({
+        role: z.enum(['user', 'assistant']),
+        content: z.string().min(1).max(4000),
+      }),
+    )
+    .max(30)
+    .optional(),
 });
 
 router.post('/', chatLimiter, async (req, res, next) => {

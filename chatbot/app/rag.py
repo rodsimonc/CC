@@ -24,38 +24,74 @@ log = logging.getLogger(__name__)
 
 DISCLAIMER = "Esto no constituye asesoramiento legal."
 
-SYSTEM_PROMPT = """Sos el asistente legal del sitio Moix Legal (Mar del Plata, Argentina).
+SYSTEM_PROMPT = """Sos el asistente virtual del Estudio Moix Abogados, en Mar del Plata, Argentina.
+El estudio se dedica EXCLUSIVAMENTE a derecho penal. Todos los abogados del equipo son penalistas.
 
-Reglas obligatorias:
-- Escribís en español rioplatense (voseo, "vos" en vez de "tú", "querés" en vez de "quieres").
-- Tono empático y profesional. Nunca das asesoramiento legal directo ni prometés resultados.
-- Nunca inventás datos, plazos o normativa que no sepas con certeza. Si no sabés, decís que un profesional puede evaluarlo.
-- Cerrás toda respuesta con el disclaimer: "Esto no constituye asesoramiento legal."
-- Longitud: entre 3 y 6 oraciones. Directo, sin rodeos innecesarios.
+# Tu tarea
 
-Tu tarea es entender la consulta del usuario y devolver EXCLUSIVAMENTE un JSON válido con este formato:
+Escuchar la consulta, decidir con seguridad si es un caso de derecho penal, y actuar así:
+
+1. Si estás SEGURO de que ES penal → decís que el estudio puede ayudar y ofrecés que un abogado del equipo lo contacte.
+2. Si estás SEGURO de que NO es penal → le decís cordialmente que el Estudio Moix Abogados se dedica solo a derecho penal, orientás qué tipo de abogado necesita (laboralista, civilista, de familia, sucesorio, del consumidor, etc.) y le sugerís buscar uno matriculado en el CAMDP.
+3. Si NO estás seguro (consulta ambigua, mezcla dos áreas, faltan datos claves) → NO decidís todavía. Hacés 1 o 2 preguntas concretas para confirmar antes de derivar o rechazar. Esto es lo más importante: cuando dudás, preguntá.
+
+# Manual de derecho penal (usalo para clasificar)
+
+## Es PENAL (el estudio lo toma)
+- Delitos contra las personas: homicidio, lesiones, amenazas, coacción, abuso, femicidio, violencia con víctima identificada como delito.
+- Delitos contra la propiedad: robo, hurto, estafa, extorsión, usurpación, administración fraudulenta.
+- Delitos económicos y patrimoniales: estafa, defraudación, evasión fiscal (fuero penal económico), lavado.
+- Delitos contra la integridad sexual: abuso, corrupción.
+- Delitos contra la administración pública: cohecho, malversación, incumplimiento de deberes.
+- Situaciones procesales penales: detenciones, allanamientos, declaración indagatoria, imputación, prisión preventiva, excarcelaciones, morigeraciones, juicio abreviado, juicio oral, recursos ante Cámara de Apelación y Garantías en lo Penal.
+- Contravenciones del Código Contravencional bonaerense y multas contravencionales.
+- Víctima de un delito que quiere hacer denuncia penal o constituirse como particular damnificado.
+- Cualquier situación donde intervengan una fiscalía o un juzgado penal.
+
+## NO es PENAL (el estudio deriva)
+- Laboral: despido, sueldo impago, aguinaldo, ART, accidente de trabajo, acoso laboral, convenio colectivo → laboralista.
+- Familia: divorcio, alimentos, tenencia, régimen de comunicación, violencia familiar SIN caso penal, mediación familiar, adopción, filiación → familia.
+- Sucesiones: herencia, testamento, declaratoria de herederos, adjudicación de bienes → sucesorio o familia.
+- Civil: contratos privados entre particulares, alquileres, desalojos, deudas civiles, daños y perjuicios sin delito, medianera, vecinos, prescripción → civilista.
+- Consumidor: defensa del consumidor, facturación indebida, servicio no prestado, garantías, ley 24.240 → especialista en consumidor.
+- Tránsito: multas, siniestros viales, choques sin víctimas mortales, licencias → civilista/comercial o especialista en tránsito.
+- Administrativo: multas municipales, trámites ante organismos públicos, empleo público → administrativista.
+- Comercial y societario: sociedades, quiebras, concursos, contratos comerciales → comercialista.
+
+## Zona gris (SIEMPRE preguntar antes de decidir)
+- "Me estafaron" → puede ser delito penal (estafa art. 172 CP) o incumplimiento contractual civil. Preguntar: ¿hubo engaño? ¿ya hizo denuncia?
+- "Violencia doméstica" → si es física con lesiones o amenazas → penal; si es solo para sacar exclusión del hogar sin denuncia penal → familia.
+- "Choqué a alguien" → si hay lesiones graves o muerte → penal (lesiones o homicidio culposo); si es solo daños materiales → civil (tránsito).
+- "Me robaron plata en una compra por internet" → estafa (penal) o defensa del consumidor (civil). Preguntar el detalle.
+- "Un vecino me amenazó" → si fue amenaza grave → penal; si es discusión menor → civil o mediación.
+
+# Reglas obligatorias de estilo
+
+- Español rioplatense (voseo: "vos", "querés", "contame", "te oriento").
+- Tono empático, sereno, profesional. Nada de jerga técnica gratuita.
+- Nunca das asesoramiento legal directo ni prometés resultados.
+- Nunca inventás plazos, artículos ni juzgados que no conozcas con certeza.
+- Cerrás cada respuesta con: "Esto no constituye asesoramiento legal."
+- Extensión: 3 a 6 oraciones.
+
+# Formato de respuesta
+
+Devolvé EXCLUSIVAMENTE un JSON válido con este formato:
 
 {
   "area": "penal" | "laboral" | "familia" | "sucesiones" | "civil" | "consumidor" | "transito" | "administrativo" | "contravenciones" | "otro" | null,
+  "is_criminal": true | false,
+  "confidence": "high" | "low",
   "urgent": true | false,
-  "answer": "<respuesta empática al usuario, terminando con el disclaimer>"
+  "answer": "<respuesta empática, terminando con el disclaimer>"
 }
 
-Reglas para "area":
-- "penal": delitos, denuncias, detenciones, imputaciones, violencia con víctima identificada.
-- "laboral": despidos, ART, sueldos, aguinaldo, acoso laboral.
-- "familia": divorcio, alimentos, tenencia, régimen de comunicación, violencia doméstica.
-- "sucesiones": herencias, testamentos, declaratoria de herederos.
-- "civil": contratos privados, vecinos, daños, alquileres, deudas civiles.
-- "consumidor": defensa del consumidor, servicios, garantías, facturación indebida.
-- "transito": siniestros viales, multas, licencias.
-- "administrativo": trámites ante organismos públicos, multas municipales.
-- "contravenciones": código contravencional.
-- null: si la consulta es un saludo, pregunta muy vaga, o fuera del ámbito legal.
+- "confidence": "high" cuando estás seguro y ya decidís (derivar o rechazar). "low" cuando no estás seguro y estás preguntando.
+- Si confidence == "low", el "answer" DEBE ser una o dos preguntas concretas para desambiguar, NO una derivación.
+- "is_criminal": true solo si area == "penal" o area == "contravenciones" con carácter penal, y confidence == "high".
+- "urgent": true si hay detención actual, plazo procesal por vencer, medida cautelar inminente o violencia física en curso.
 
-Regla para "urgent": true si menciona detención actual, plazo procesal a punto de vencer, medida cautelar inminente, violencia física en curso.
-
-Devolvé SOLO el JSON, sin ningún texto extra, sin backticks, sin ```json.
+Devolvé SOLO el JSON, sin texto extra ni backticks.
 """
 
 
@@ -74,6 +110,8 @@ class ChatResult:
     booking_cta: dict | None = None
     area: str | None = None
     urgency: str = "medium"
+    confidence: str = "high"
+    is_asking: bool = False
     engine: str = "fallback"
 
 
@@ -99,39 +137,23 @@ def _load_lawyers() -> list[dict]:
 
 LAWYERS = _load_lawyers()
 
-_AREA_ALIASES = {
-    "sucesiones": ["sucesion", "sucesiones", "familia"],
-    "familia": ["familia"],
-    "penal": ["penal", "academico"],
-    "laboral": ["laboral"],
-    "civil": ["civil"],
-    "comercial": ["comercial", "civil"],
-    "consumidor": ["consumidor", "civil", "comercial"],
-    "transito": ["civil", "comercial"],
-    "administrativo": ["administrativo", "civil"],
-    "contravenciones": ["penal"],
-}
-
-
-def _pick_lawyers(area: str | None, limit: int = 1) -> list[Recommendation]:
-    if not area or not LAWYERS:
+# En el nuevo modelo, el sitio pertenece al Estudio Moix (solo penalistas).
+# Si la consulta es penal, la recomendación es el estudio: cabeza visible es Moix.
+def _pick_lawyers(area: str | None, is_criminal: bool = False, limit: int = 1) -> list[Recommendation]:
+    if not is_criminal or not LAWYERS:
         return []
-    wanted = _AREA_ALIASES.get(area, [area])
-    matches: list[Recommendation] = []
     for lw in LAWYERS:
         practice = lw.get("practice_areas") or []
-        if any(a in practice for a in wanted):
-            matches.append(
+        if "penal" in practice:
+            return [
                 Recommendation(
                     slug=lw["slug"],
                     full_name=lw["full_name"],
                     headline=lw.get("headline") or "",
-                    reason=f"Especialidad declarada en {area}. {lw.get('headline') or ''}".strip(),
+                    reason="Estudio dedicado a derecho penal en Mar del Plata.",
                 )
-            )
-            if len(matches) >= limit:
-                break
-    return matches
+            ][:limit]
+    return []
 
 
 def _booking_from(rec: Recommendation) -> dict:
@@ -148,30 +170,41 @@ def _booking_from(rec: Recommendation) -> dict:
 def _fallback(question: str) -> ChatResult:
     area = detect_area(question)
     urgency = detect_urgency(question)
-    recs = _pick_lawyers(area)
+    is_criminal = area == "penal" or area == "contravenciones"
+    recs = _pick_lawyers(area, is_criminal=is_criminal)
 
     if not area:
         answer = (
-            "Contame un poco más para poder orientarte. ¿Es un tema laboral, "
-            "de familia, un problema con un vecino o comercio, algo de tránsito "
-            "o una situación penal? Cuanto más detalle me des, mejor. " + DISCLAIMER
+            "Contame un poco más para poder orientarte. ¿Qué te está pasando? "
+            "El Estudio Moix Abogados se dedica a derecho penal, pero si tu "
+            "caso es de otra área te puedo orientar igual. " + DISCLAIMER
         )
         return ChatResult(answer=answer, area=None, urgency=urgency, engine="fallback-heuristic")
 
-    prefix = "Entiendo que es urgente. " if urgency == "urgent" else ""
-    core = {
-        "penal": "Suena a una cuestión del fuero penal. Los tiempos corren rápido, así que conviene consultar cuanto antes con un defensor técnico.",
-        "laboral": "Parece un tema laboral. Hay plazos que corren desde el hecho, así que conviene consultar pronto con un abogado laboralista.",
-        "familia": "Es un asunto del fuero de familia. Según el caso puede resolverse por mediación o por vía judicial.",
-        "sucesiones": "Se trata de una sucesión. El proceso tiene varios pasos (declaratoria de herederos, inventario, adjudicación).",
-        "civil": "Es un tema civil. Un abogado civilista puede revisar tu caso y evaluar plazos y prescripción.",
-        "consumidor": "Suena a defensa del consumidor. Hay vías administrativas y también reclamo judicial cuando corresponde.",
-        "transito": "Parece un tema de tránsito. Es importante recopilar la documentación (constatación, denuncia, testigos) antes de reclamar.",
-        "administrativo": "Es un tema administrativo. Un abogado con experiencia en el fuero puede orientarte sobre el trámite.",
-        "contravenciones": "Es una cuestión contravencional. Un abogado del fuero puede asesorarte.",
-    }.get(area, "Un abogado matriculado puede orientarte con más detalle.")
+    if is_criminal:
+        prefix = "Entiendo que es urgente. " if urgency == "urgent" else ""
+        answer = (
+            f"{prefix}Suena a una cuestión del fuero penal. El Estudio Moix "
+            "Abogados se dedica a esto y te puede acompañar. Si querés, un "
+            f"abogado del equipo te contacta. {DISCLAIMER}"
+        )
+    else:
+        redirect = {
+            "laboral": "necesitás un abogado laboralista",
+            "familia": "necesitás un abogado del fuero de familia",
+            "sucesiones": "necesitás un abogado sucesorio o de familia",
+            "civil": "necesitás un abogado civilista",
+            "consumidor": "necesitás un abogado con experiencia en defensa del consumidor",
+            "transito": "necesitás un abogado con experiencia en siniestros viales",
+            "administrativo": "necesitás un abogado con experiencia en derecho administrativo",
+        }.get(area, "necesitás un abogado del fuero correspondiente")
+        answer = (
+            "Te agradezco la consulta. El Estudio Moix Abogados se dedica "
+            f"exclusivamente a derecho penal, así que este caso no es para "
+            f"nosotros — {redirect}. Podés buscarlo en el Colegio de Abogados "
+            f"de Mar del Plata (CAMDP). {DISCLAIMER}"
+        )
 
-    answer = f"{prefix}{core} {DISCLAIMER}"
     return ChatResult(
         answer=answer,
         recommendations=recs,
@@ -209,12 +242,26 @@ def _get_gemini():
         return None
 
 
-def _ask_gemini(question: str) -> dict[str, Any] | None:
+def _ask_gemini(question: str, history: list[dict] | None = None) -> dict[str, Any] | None:
     model = _get_gemini()
     if model is None:
         return None
     try:
-        response = model.generate_content(question)
+        # Convertimos el history al formato de Gemini y arrancamos una sesión de chat
+        gemini_history = []
+        for m in history or []:
+            role = m.get("role")
+            content = (m.get("content") or "").strip()
+            if not content or role not in ("user", "assistant"):
+                continue
+            gemini_history.append(
+                {
+                    "role": "user" if role == "user" else "model",
+                    "parts": [content],
+                }
+            )
+        chat = model.start_chat(history=gemini_history)
+        response = chat.send_message(question)
         raw = (response.text or "").strip()
         if raw.startswith("```"):
             raw = raw.strip("`")
@@ -229,9 +276,13 @@ def _ask_gemini(question: str) -> dict[str, Any] | None:
 # --- entrada pública -----------------------------------------------------
 
 
-def answer_with_rag(question: str, session_id: str) -> ChatResult:
-    log.debug("chat request session=%s", session_id)
-    parsed = _ask_gemini(question)
+def answer_with_rag(
+    question: str,
+    session_id: str,
+    history: list[dict] | None = None,
+) -> ChatResult:
+    log.debug("chat request session=%s history_len=%d", session_id, len(history or []))
+    parsed = _ask_gemini(question, history=history)
     if not parsed:
         return _fallback(question)
 
@@ -244,14 +295,32 @@ def answer_with_rag(question: str, session_id: str) -> ChatResult:
     area = parsed.get("area")
     if area == "otro":
         area = None
+    is_criminal = bool(parsed.get("is_criminal"))
+    confidence = "low" if parsed.get("confidence") == "low" else "high"
     urgency = "urgent" if bool(parsed.get("urgent")) else "medium"
 
-    recs = _pick_lawyers(area)
+    # Cuando el bot está haciendo una pregunta de aclaración, NO recomendamos
+    # abogados ni ofrecemos agenda todavía: primero completá la información.
+    if confidence == "low":
+        return ChatResult(
+            answer=answer,
+            recommendations=[],
+            booking_cta=None,
+            area=area,
+            urgency=urgency,
+            confidence="low",
+            is_asking=True,
+            engine="gemini",
+        )
+
+    recs = _pick_lawyers(area, is_criminal=is_criminal)
     return ChatResult(
         answer=answer,
         recommendations=recs,
         booking_cta=_booking_from(recs[0]) if recs else None,
         area=area,
         urgency=urgency,
+        confidence="high",
+        is_asking=False,
         engine="gemini",
     )

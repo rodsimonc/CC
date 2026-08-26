@@ -15,9 +15,15 @@ log = logging.getLogger("chatbot")
 app = FastAPI(title="Moix Legal Chatbot", version="0.1.0")
 
 
+class HistoryItem(BaseModel):
+    role: str = Field(pattern="^(user|assistant)$")
+    content: str = Field(min_length=1, max_length=4000)
+
+
 class ChatRequest(BaseModel):
     session_id: str = Field(min_length=1, max_length=80)
     question: str = Field(min_length=1, max_length=2000)
+    history: list[HistoryItem] = []
 
 
 class RecommendationDto(BaseModel):
@@ -33,6 +39,8 @@ class ChatResponse(BaseModel):
     booking_cta: dict | None = None
     area: str | None = None
     urgency: str = "medium"
+    confidence: str = "high"
+    is_asking: bool = False
     engine: str = "fallback"
 
 
@@ -50,13 +58,16 @@ def health() -> dict:
 @app.post("/api/chat", response_model=ChatResponse)
 def chat(req: ChatRequest) -> ChatResponse:
     log.debug("chat request", extra={"session_id": req.session_id})
-    result = answer_with_rag(req.question, req.session_id)
+    history = [h.model_dump() for h in req.history]
+    result = answer_with_rag(req.question, req.session_id, history=history)
     return ChatResponse(
         answer=result.answer,
         recommendations=[RecommendationDto(**r.__dict__) for r in result.recommendations],
         booking_cta=result.booking_cta,
         area=result.area,
         urgency=result.urgency,
+        confidence=result.confidence,
+        is_asking=result.is_asking,
         engine=result.engine,
     )
 
