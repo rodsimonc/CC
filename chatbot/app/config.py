@@ -17,7 +17,9 @@ class Settings(BaseSettings):
     port: int = 8000
     log_level: str = "INFO"
 
-    gemini_model: str = "gemini-1.5-flash"
+    # Gemini 2.5 Flash es el estable con mejor precio/latencia para el chat.
+    # Se puede sobreescribir con GEMINI_MODEL en Render sin redeploy.
+    gemini_model: str = "gemini-2.5-flash"
 
     @property
     def has_llm(self) -> bool:
