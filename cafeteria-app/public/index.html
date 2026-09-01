@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cafetería · Inicio</title>
+<link rel="stylesheet" href="/assets/app.css">
+<style>
+  /* Carrusel de la landing: rota cada 15 s con transición suave. */
+  .carousel{position:relative;margin:22px 0 8px;border-radius:18px;overflow:hidden;background:var(--cream);
+    aspect-ratio:16/7;border:1px solid var(--line)}
+  .carousel .slide{position:absolute;inset:0;opacity:0;transition:opacity 1.1s ease;
+    background-size:cover;background-position:center}
+  .carousel .slide.on{opacity:1}
+  .carousel .ph{position:absolute;inset:0;display:flex;flex-direction:column;gap:6px;
+    align-items:center;justify-content:center;color:#b3a08c;text-align:center;padding:20px}
+  .carousel .ph .ico{font-size:3rem}
+  .carousel .ph p{margin:0;font-size:.9rem;max-width:32ch}
+  .carousel .caption{position:absolute;left:0;right:0;bottom:0;padding:26px 22px 16px;color:#fff;
+    background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.55));font-size:.92rem}
+  .carousel .dots{position:absolute;right:14px;top:14px;display:flex;gap:6px}
+  .carousel .dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.55)}
+  .carousel .dots span.on{background:#fff}
+  @media(max-width:640px){.carousel{aspect-ratio:4/3}}
+
+  .welcome{font-family:var(--serif);font-size:1.22rem;line-height:1.65;margin:26px 0 8px;max-width:62ch}
+  .hero{padding:20px 0 4px}
+  .hero h1{font-family:var(--serif);font-size:2.1rem;margin:0 0 6px}
+  .hero .meta{color:var(--muted);font-size:.94rem;margin:2px 0}
+  .cta{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 10px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:8px}
+  .cards .panel h3{font-family:var(--serif);margin:0 0 6px;font-size:1.15rem}
+  .cards .panel p{margin:0 0 14px;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="bar">
+      <div class="logo"><span data-shop-name>Cafetería</span><span class="dot">.</span></div>
+      <nav class="links">
+        <a href="/">Inicio</a>
+        <a href="/menu.html">Menú</a>
+        <a href="/reservar.html">Reservar mesa</a>
+        <a href="/admin.html">Panel</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1 data-shop-name>Cafetería</h1>
+    <p class="meta" id="shopAddress"></p>
+    <p class="meta" id="shopHours"></p>
+  </section>
+
+  <!-- Carrusel: las fotos las carga el dueño desde el panel. -->
+  <section class="carousel" id="carousel" aria-label="Fotos de la cafetería">
+    <div class="ph" id="carouselPh">
+      <div class="ico">☕</div>
+      <p>Todavía no hay fotos cargadas. Subilas desde el panel de administración.</p>
+    </div>
+  </section>
+
+  <p class="welcome" id="welcomeText"></p>
+
+  <div class="cta">
+    <a class="btn" href="/reservar.html">Reservar una mesa</a>
+    <a class="btn ghost" href="/menu.html">Ver el menú</a>
+    <a class="btn wpp" id="wppBtn" target="_blank" rel="noopener">💬 WhatsApp</a>
+    <a class="btn ghost" id="mailBtn">✉️ Enviar mail</a>
+  </div>
+
+  <h2 class="sec">Cómo funciona</h2>
+  <div class="cards">
+    <div class="panel">
+      <h3>Nuestro menú</h3>
+      <p>Desayuno, brunch y cena, cada franja con su carta propia.</p>
+      <a class="btn ghost sm" href="/menu.html">Abrir el menú</a>
+    </div>
+    <div class="panel">
+      <h3>Reservá tu mesa</h3>
+      <p>Elegí día, zona del salón y turno de 2 horas. Te confirmamos por WhatsApp.</p>
+      <a class="btn ghost sm" href="/reservar.html">Reservar</a>
+    </div>
+    <div class="panel">
+      <h3>Dónde estamos</h3>
+      <p class="meta" id="shopNotes"></p>
+      <a class="btn ghost sm" id="mailBtn2" href="#">Escribinos</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap fbar">
+    <span><span data-shop-name></span> · <span id="shopPhone"></span></span>
+    <span><a href="/menu.html">Menú</a> · <a href="/reservar.html">Reservas</a> · <a href="/admin.html">Panel</a></span>
+  </div>
+</footer>
+
+<script src="/assets/common.js"></script>
+<script src="/assets/landing.js"></script>
+</body>
+</html>

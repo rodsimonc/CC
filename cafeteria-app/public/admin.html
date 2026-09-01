@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cafetería · Panel</title>
+<link rel="stylesheet" href="/assets/app.css">
+<style>
+  .login-wrap{max-width:420px;margin:8vh auto 0}
+  .login-wrap h1{font-family:var(--serif);font-size:1.5rem;margin:0 0 4px}
+  .login-wrap .lead{color:var(--muted);font-size:.9rem;margin:0 0 18px}
+
+  .admin-tabs{display:flex;gap:8px;margin:20px 0 4px;flex-wrap:wrap}
+  .atab{padding:9px 18px;border:1px solid var(--line);border-radius:999px;background:#fff;font:inherit;
+    font-size:.9rem;color:var(--muted);cursor:pointer}
+  .atab:hover{background:var(--cream)}
+  .atab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .view{display:none} .view.on{display:block}
+
+  table.grid{width:100%;border-collapse:collapse;font-size:.88rem}
+  table.grid th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--muted);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+  table.grid td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+  table.grid tr.off{opacity:.5}
+  table.grid input,table.grid select{padding:6px 8px;font-size:.85rem}
+  .grid-scroll{overflow-x:auto}
+  .thumb-sm{width:46px;height:46px;border-radius:8px;background:var(--cream) center/cover no-repeat;
+    display:flex;align-items:center;justify-content:center;color:#c3ae97;font-size:1.1rem;cursor:pointer;flex:none}
+  .actions{display:flex;gap:6px;flex-wrap:wrap}
+
+  .carousel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-top:12px}
+  .carousel-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  .carousel-card .pic{height:120px;background:var(--cream) center/cover no-repeat}
+  .carousel-card .meta{padding:10px;display:flex;gap:8px;align-items:center}
+  .carousel-card .meta input{width:64px}
+
+  .tables-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px;margin-top:10px}
+  .tcell{border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff;font-size:.85rem;
+    display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .tcell.off{background:#f6f1ea;color:var(--muted)}
+  .tcell button{border:none;background:none;font:inherit;font-size:.78rem;color:var(--accent);cursor:pointer;padding:0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="bar">
+      <div class="logo"><span data-shop-name>Cafetería</span><span class="dot">.</span> <span class="muted" style="font-size:.85rem;font-family:var(--sans);font-weight:400">Panel</span></div>
+      <nav class="links">
+        <a href="/">Ver el sitio</a>
+        <a href="/menu.html">Menú</a>
+        <a href="/reservar.html">Reservas</a>
+        <button class="btn ghost sm" id="logoutBtn" style="display:none">Salir</button>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- Vista de acceso: primer uso (crear dueño) o login -->
+<main class="wrap" id="loginView">
+  <div class="login-wrap">
+    <div class="panel" id="setupCard" style="display:none">
+      <h1>Creá la cuenta del dueño</h1>
+      <p class="lead">Es el primer uso del panel. Después de crearla, este formulario se cierra.</p>
+      <label for="suName">Nombre</label>
+      <input id="suName" placeholder="Nombre del dueño" autocomplete="name">
+      <label for="suEmail">Email</label>
+      <input id="suEmail" type="email" placeholder="nombre@mail.com" autocomplete="email">
+      <div class="field-err" data-for="email"></div>
+      <label for="suPassword">Contraseña</label>
+      <input id="suPassword" type="password" placeholder="mín. 8 caracteres, con letras y números" autocomplete="new-password">
+      <div class="field-err" data-for="password"></div>
+      <label for="suPassword2">Repetir contraseña</label>
+      <input id="suPassword2" type="password" autocomplete="new-password">
+      <div class="field-err" data-for="password2"></div>
+      <button class="btn" id="setupBtn" style="width:100%;margin-top:16px">Crear cuenta</button>
+      <div class="msg" id="setupMsg"></div>
+    </div>
+
+    <div class="panel" id="loginCard" style="display:none">
+      <h1>Ingresar al panel</h1>
+      <p class="lead">Acceso del dueño de la cafetería.</p>
+      <label for="liEmail">Email</label>
+      <input id="liEmail" type="email" autocomplete="email">
+      <label for="liPassword">Contraseña</label>
+      <input id="liPassword" type="password" autocomplete="current-password">
+      <button class="btn" id="loginBtn" style="width:100%;margin-top:16px">Ingresar</button>
+      <div class="msg" id="loginMsg"></div>
+    </div>
+  </div>
+</main>
+
+<!-- Panel -->
+<main class="wrap" id="appView" style="display:none">
+  <div class="admin-tabs">
+    <button class="atab active" data-view="menu">Menú</button>
+    <button class="atab" data-view="landing">Landing</button>
+    <button class="atab" data-view="reservas">Reservas</button>
+  </div>
+
+  <!-- MENÚ -->
+  <section class="view on" id="view-menu">
+    <h2 class="sec">Ítems del menú</h2>
+    <div class="panel">
+      <h3 style="margin:0 0 10px;font-family:var(--serif);font-size:1.1rem">Agregar un ítem</h3>
+      <div class="row">
+        <div><label for="miCategory">Categoría</label>
+          <select id="miCategory"><option value="desayuno">Desayuno</option><option value="brunch">Brunch</option><option value="cena">Cena</option></select>
+          <div class="field-err" data-for="category"></div></div>
+        <div><label for="miSide">Columna</label>
+          <select id="miSide"><option value="left">Izquierda</option><option value="right">Derecha</option></select></div>
+        <div><label for="miSort">Orden</label><input id="miSort" type="number" min="0" placeholder="auto">
+          <div class="field-err" data-for="sortOrder"></div></div>
+        <div><label for="miPrice">Precio</label><input id="miPrice" type="number" min="0" step="1" value="0">
+          <div class="field-err" data-for="price"></div></div>
+      </div>
+      <label for="miName">Nombre</label>
+      <input id="miName" placeholder="Ej: Café con leche">
+      <div class="field-err" data-for="name"></div>
+      <label for="miDescription">Descripción</label>
+      <textarea id="miDescription" placeholder="Breve, como en la carta."></textarea>
+      <label for="miImage">Foto (opcional)</label>
+      <input id="miImage" type="file" accept="image/*">
+      <div class="field-err" data-for="image"></div>
+      <button class="btn" id="miCreateBtn" style="margin-top:14px">Agregar al menú</button>
+      <div class="msg" id="menuMsg"></div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <div class="row" style="align-items:flex-end">
+        <div><label for="menuFilter">Ver categoría</label>
+          <select id="menuFilter">
+            <option value="">Todas</option><option value="desayuno">Desayuno</option>
+            <option value="brunch">Brunch</option><option value="cena">Cena</option>
+          </select></div>
+      </div>
+      <div class="grid-scroll" style="margin-top:12px">
+        <table class="grid" id="menuTable"><tbody><tr><td class="empty">Cargando…</td></tr></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANDING -->
+  <section class="view" id="view-landing">
+    <h2 class="sec">Carrusel de la landing</h2>
+    <div class="panel">
+      <p class="muted" style="margin:0 0 10px;font-size:.88rem">Las fotos rotan solas cada 15 segundos en la portada.</p>
+      <label for="liImage">Agregar una foto</label>
+      <input id="liImage" type="file" accept="image/*">
+      <label for="liCaption">Epígrafe (opcional)</label>
+      <input id="liCaption" placeholder="Ej: Nuestro salón por la mañana">
+      <button class="btn" id="liUploadBtn" style="margin-top:14px">Subir foto</button>
+      <div class="msg" id="landingMsg"></div>
+      <div class="carousel-grid" id="carouselAdmin"></div>
+    </div>
+
+    <h2 class="sec">Datos del local y bienvenida</h2>
+    <div class="panel">
+      <label for="shName">Nombre</label><input id="shName">
+      <label for="shWelcome">Texto de bienvenida (landing)</label><textarea id="shWelcome" style="min-height:96px"></textarea>
+      <div class="row">
+        <div><label for="shAddress">Dirección</label><input id="shAddress"></div>
+        <div><label for="shHours">Horario</label><input id="shHours"></div>
+      </div>
+      <div class="row">
+        <div><label for="shPhone">Teléfono</label><input id="shPhone"></div>
+        <div><label for="shEmail">Email</label><input id="shEmail" type="email"></div>
+        <div><label for="shWhatsapp">WhatsApp (con código de país)</label><input id="shWhatsapp" placeholder="5492235556677"></div>
+      </div>
+      <label for="shNotes">Nota corta</label><input id="shNotes">
+      <button class="btn" id="shSaveBtn" style="margin-top:14px">Guardar datos del local</button>
+      <div class="msg" id="shopMsg"></div>
+    </div>
+
+    <h2 class="sec">Mesas del salón</h2>
+    <div class="panel">
+      <p class="muted" style="margin:0;font-size:.88rem">El layout es fijo. Acá solo se habilita o se da de baja cada mesa.</p>
+      <div class="tables-grid" id="tablesAdmin"></div>
+      <div class="msg" id="tablesMsg"></div>
+    </div>
+  </section>
+
+  <!-- RESERVAS -->
+  <section class="view" id="view-reservas">
+    <h2 class="sec">Reservas</h2>
+    <div class="panel">
+      <div class="row" style="align-items:flex-end">
+        <div style="max-width:220px"><label for="resDate">Fecha</label><input id="resDate" type="date"></div>
+        <div style="max-width:180px"><label>&nbsp;</label><button class="btn ghost" id="resAllBtn" style="width:100%">Ver todas</button></div>
+      </div>
+      <div class="grid-scroll" style="margin-top:12px">
+        <table class="grid" id="resTable"><tbody><tr><td class="empty">Cargando…</td></tr></tbody></table>
+      </div>
+      <div class="msg" id="resMsg"></div>
+    </div>
+  </section>
+</main>
+
+<script src="/assets/common.js"></script>
+<script src="/assets/admin.js"></script>
+</body>
+</html>

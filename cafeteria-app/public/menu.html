@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cafetería · Menú</title>
+<link rel="stylesheet" href="/assets/app.css">
+<style>
+  .tabs{display:flex;gap:8px;margin:20px 0 8px;flex-wrap:wrap}
+  .tab{padding:9px 20px;border:1px solid var(--line);border-radius:999px;background:#fff;
+    font:inherit;font-size:.92rem;color:var(--muted);cursor:pointer}
+  .tab:hover{background:var(--cream)}
+  .tab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  /* El menú se lee como una carta física: dos columnas a lo ancho. */
+  .menu-sheet{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:30px 34px;margin-top:14px}
+  .menu-title{font-family:var(--serif);text-align:center;font-size:1.7rem;margin:0 0 4px}
+  .menu-sub{text-align:center;color:var(--muted);font-size:.86rem;margin:0 0 22px;
+    text-transform:uppercase;letter-spacing:.14em}
+  .columns{display:grid;grid-template-columns:1fr 1px 1fr;gap:0 30px}
+  .divider{background:var(--line)}
+  @media(max-width:760px){.columns{grid-template-columns:1fr}.divider{display:none}.menu-sheet{padding:22px 18px}}
+
+  .item{display:flex;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
+  .item:last-child{border-bottom:none}
+  .item .thumb{width:74px;height:74px;flex:none;border-radius:11px;background:var(--cream) center/cover no-repeat;
+    display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#c3ae97}
+  .item .body{flex:1;min-width:0}
+  .item .head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .item .name{font-family:var(--serif);font-size:1.06rem;font-weight:600}
+  .item .dots{flex:1;border-bottom:1px dotted var(--line);transform:translateY(-4px)}
+  .item .price{font-weight:700;white-space:nowrap}
+  .item .desc{color:var(--muted);font-size:.87rem;margin-top:3px}
+  .col-empty{color:var(--muted);font-size:.87rem;padding:16px 0;text-align:center}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="bar">
+      <div class="logo"><span data-shop-name>Cafetería</span><span class="dot">.</span></div>
+      <nav class="links">
+        <a href="/">Inicio</a>
+        <a href="/menu.html">Menú</a>
+        <a href="/reservar.html">Reservar mesa</a>
+        <a href="/admin.html">Panel</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <h2 class="sec">Nuestro menú</h2>
+  <p class="muted" style="margin-top:-8px">Cada franja del día tiene su propia carta.</p>
+
+  <div class="tabs" id="tabs" role="tablist">
+    <button class="tab active" data-cat="desayuno" role="tab">Desayuno</button>
+    <button class="tab" data-cat="brunch" role="tab">Brunch</button>
+    <button class="tab" data-cat="cena" role="tab">Cena</button>
+  </div>
+
+  <section class="menu-sheet">
+    <h3 class="menu-title" id="sheetTitle">Desayuno</h3>
+    <p class="menu-sub" data-shop-name>Cafetería</p>
+    <div class="columns">
+      <div id="colLeft"><p class="col-empty">Cargando…</p></div>
+      <div class="divider"></div>
+      <div id="colRight"></div>
+    </div>
+  </section>
+
+  <div class="cta" style="display:flex;gap:10px;flex-wrap:wrap;margin:22px 0">
+    <a class="btn" href="/reservar.html">Reservar una mesa</a>
+    <a class="btn wpp" id="wppBtn" target="_blank" rel="noopener">💬 WhatsApp</a>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap fbar">
+    <span><span data-shop-name></span> · <span id="shopPhone"></span> · <span id="shopHours"></span></span>
+    <span><a href="/">Inicio</a> · <a href="/reservar.html">Reservas</a></span>
+  </div>
+</footer>
+
+<script src="/assets/common.js"></script>
+<script src="/assets/menu.js"></script>
+</body>
+</html>

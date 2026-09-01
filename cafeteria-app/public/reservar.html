@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cafetería · Reservar mesa</title>
+<link rel="stylesheet" href="/assets/app.css">
+<style>
+  .layout{display:grid;grid-template-columns:1fr 340px;gap:26px;align-items:start;margin-bottom:40px}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+
+  .step{font-family:var(--serif);font-size:1.15rem;margin:0 0 4px}
+  .step .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;
+    align-items:center;justify-content:center;font-family:var(--sans);font-size:.8rem;font-weight:700;margin-right:8px}
+  .hint{color:var(--muted);font-size:.85rem;margin:0 0 14px}
+
+  /* Turnos: bloques de 2 h. Los huecos entre turnos son de limpieza y no se ofrecen. */
+  .slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:9px}
+  .slot{border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 8px;font:inherit;
+    font-size:.9rem;cursor:pointer;text-align:center}
+  .slot:hover:not(:disabled){background:var(--cream)}
+  .slot.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .slot:disabled{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+
+  .zone{margin-top:16px}
+  .zone h4{margin:0 0 8px;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+  .tables{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:9px}
+  .table-btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 4px;font:inherit;
+    font-size:.85rem;font-weight:600;cursor:pointer;text-align:center;line-height:1.25}
+  .table-btn small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+  .table-btn:hover:not(:disabled){background:var(--cream)}
+  .table-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .table-btn.active small{color:rgba(255,255,255,.8)}
+  .table-btn:disabled{opacity:.42;cursor:not-allowed;background:#f6f1ea}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:.78rem;margin-top:14px}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1px solid var(--line)}
+  .legend .free{background:#fff} .legend .sel{background:var(--accent);border-color:var(--accent)} .legend .busy{background:#f6f1ea}
+
+  aside{position:sticky;top:16px;display:flex;flex-direction:column;gap:16px}
+  .summary-row{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .summary-row span:first-child{color:var(--muted)}
+  .ok-box{background:#eafaf0;border:1px solid #c7ecd5;border-radius:12px;padding:16px;margin-top:14px}
+  .ok-box h4{margin:0 0 6px;font-family:var(--serif);font-size:1.1rem;color:#1c6b40}
+  .ok-box p{margin:0 0 12px;font-size:.87rem;color:#2c6b48}
+  .ok-box .btn{margin-right:8px;margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="bar">
+      <div class="logo"><span data-shop-name>Cafetería</span><span class="dot">.</span></div>
+      <nav class="links">
+        <a href="/">Inicio</a>
+        <a href="/menu.html">Menú</a>
+        <a href="/reservar.html">Reservar mesa</a>
+        <a href="/admin.html">Panel</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <h2 class="sec">Reservar una mesa</h2>
+  <p class="muted" style="margin-top:-8px" id="shopNotes"></p>
+
+  <div class="layout">
+    <section>
+      <div class="panel">
+        <h3 class="step"><span class="n">1</span>Elegí el día</h3>
+        <p class="hint">Se muestran solo los turnos y mesas libres para esa fecha.</p>
+        <div style="max-width:230px"><input type="date" id="date"></div>
+        <div class="field-err" data-for="date"></div>
+      </div>
+
+      <div class="panel" style="margin-top:16px">
+        <h3 class="step"><span class="n">2</span>Elegí el turno</h3>
+        <p class="hint">Turnos de 2 horas. Entre turno y turno acomodamos el salón.</p>
+        <div class="slots" id="slots"></div>
+        <div class="field-err" data-for="slot"></div>
+      </div>
+
+      <div class="panel" style="margin-top:16px">
+        <h3 class="step"><span class="n">3</span>Elegí la mesa</h3>
+        <p class="hint">Las mesas tachadas ya están tomadas en ese turno.</p>
+        <div id="zones"><p class="empty">Cargando el salón…</p></div>
+        <div class="legend">
+          <span><i class="free"></i>Libre</span>
+          <span><i class="sel"></i>Elegida</span>
+          <span><i class="busy"></i>Ocupada o no disponible</span>
+        </div>
+        <div class="field-err" data-for="tableId"></div>
+      </div>
+    </section>
+
+    <aside>
+      <div class="panel">
+        <h3 class="step" style="font-size:1.05rem"><span class="n">4</span>Tus datos</h3>
+        <div class="summary-row"><span>Día</span><strong id="sumDate">—</strong></div>
+        <div class="summary-row"><span>Turno</span><strong id="sumSlot">—</strong></div>
+        <div class="summary-row"><span>Mesa</span><strong id="sumTable">—</strong></div>
+
+        <label for="customerName">Nombre y apellido</label>
+        <input id="customerName" placeholder="Ej: Rodrigo Simón" autocomplete="name">
+        <div class="field-err" data-for="customerName"></div>
+
+        <label for="customerWhatsapp">Tu WhatsApp (con código de país)</label>
+        <input id="customerWhatsapp" placeholder="Ej: 5492235551234" inputmode="tel" autocomplete="tel">
+        <div class="field-err" data-for="customerWhatsapp"></div>
+
+        <button class="btn" id="reserveBtn" style="width:100%;margin-top:16px">Confirmar reserva</button>
+        <div class="msg" id="reserveMsg"></div>
+
+        <div class="ok-box" id="okBox" style="display:none">
+          <h4>¡Listo!</h4>
+          <p id="okText"></p>
+          <a class="btn wpp sm" id="okShopLink" target="_blank" rel="noopener">Avisar a la cafetería</a>
+          <a class="btn ghost sm" id="okCustomerLink" target="_blank" rel="noopener">Mandarme la confirmación</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap fbar">
+    <span><span data-shop-name></span> · <span id="shopAddress"></span> · <span id="shopHours"></span></span>
+    <span><a href="/">Inicio</a> · <a href="/menu.html">Menú</a></span>
+  </div>
+</footer>
+
+<script src="/assets/common.js"></script>
+<script src="/assets/reservar.js"></script>
+</body>
+</html>
